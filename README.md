@@ -43,3 +43,7 @@ May be required (according to the hyprland wiki), not necessary in my experience
 sudo sed -i 's/MODULES=.*/MODULES=(nvidia nvidia_modeset nvidia_uvm nvidia_drm)/' /etc/mkinitcpio.conf
 sudo mkinitcpio -P
 ```
+
+Credits to these dotfile repos, heavily influenced this one:
+https://github.com/nadeemohc/dotfiles-hyprland-.git/
+https://github.com/shivam-salkar/minimal-waybar-config.git/
