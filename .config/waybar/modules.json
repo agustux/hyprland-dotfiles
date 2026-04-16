@@ -1,0 +1,65 @@
+{
+    "custom/arch": {
+        "format": "󰣇",
+        "tooltip": false
+    },
+
+    "wireplumber": {
+        "format": "{icon}  {volume}%",
+        "scroll-step": 5,
+        "format-muted": "",
+        "format-icons": {
+            "default": ["", "", ""]
+        },
+        "on-click": "pavucontrol"
+    },
+
+
+    "bluetooth": {
+        "format": "",
+        "tooltip": true,
+        "tooltip-format": "{status}",
+        "on-click": "rofi-bluetooth -i"
+    },
+
+    "network": {
+        "format-wifi": "  {essid}" ,
+        "tooltip": true,
+        "tooltip-format": "SSID: {essid}\nSignal: {signalStrength}%\nSpeed: {bandwidthDownBits} ↓ / {bandwidthUpBits} ↑",
+        "format-ethernet": "",
+        "format-disconnected": "⚠",
+        "interval": 2,
+        "on-click": "networkmanager_dmenu -i"
+    },
+
+    "cpu": {
+        "format": "",
+        "tooltip": false
+    },
+
+    "battery": {
+        "states": {
+            "warning": 30,
+            "critical": 15
+        },
+        "format": "{icon}  {capacity}%",
+        "format-charging": " {capacity}%",
+        "format-plugged": " {capacity}%",
+        "format-icons": ["", "", "", "", ""],
+        
+
+        "on-click": "~/.config/waybar/scripts/power-profiles.sh"
+    },
+
+    "clock": {
+        "format": "{:%e %B %H:%M}",
+        "tooltip-format": "<big>{:%Y %B}</big>\n<tt><small>{calendar}</small></tt>"
+    },
+
+
+    "custom/power": {
+        "format": "",
+        "tooltip": false,
+        "on-click": "~/.config/waybar/scripts/powermenu.sh"
+    }
+}

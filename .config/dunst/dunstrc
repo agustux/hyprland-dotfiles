@@ -1,0 +1,26 @@
+[global]
+    font = JetBrainsMono Nerd Font 11
+    background = "#0b1220"
+    foreground = "#e6e8ee"
+    frame_color = "#32bfee"
+    frame_width = 2
+    corner_radius = 8
+    origin = top-center
+
+[urgency_low]
+    background = "#0b1220"
+    foreground = "#e6e8ee"
+    frame_color = "#a8d4e0"
+    timeout = 5
+
+[urgency_normal]
+    background = "#0b1220"
+    foreground = "#e6e8ee"
+    frame_color = "#32bfee"
+    timeout = 10
+
+[urgency_critical]
+    background = "#0b1220"
+    foreground = "#e6e8ee"
+    frame_color = "#e06c75"
+    timeout = 0
