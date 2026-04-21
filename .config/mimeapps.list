@@ -1,0 +1,11 @@
+[Default Applications]
+image/jpeg=org.gnome.Loupe.desktop
+image/png=org.gnome.Loupe.desktop
+image/gif=org.gnome.Loupe.desktop
+image/webp=org.gnome.Loupe.desktop
+video/mp4=org.gnome.Showtime.desktop
+video/x-matroska=org.gnome.Showtime.desktop
+video/webm=org.gnome.Showtime.desktop
+video/quicktime=org.gnome.Showtime.desktop
+text/plain=nvim.desktop
+audio/mpeg=org.gnome.Decibels.desktop
