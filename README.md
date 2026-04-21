@@ -29,6 +29,15 @@ yay -S tff-dejavu ttf-jetbrains-mono-nerd ttf-nerd-fonts-symbols-mono ttf-nerd-f
 ```
 Should now be able to copy the contents of .config into your ~/.config
 
+Make these directories for Nautilus bookmarks:
+```
+mkdir $HOME/Documents
+mkdir $HOME/Music
+mkdir $HOME/Pictures
+mkdir $HOME/Videos
+mkdir $HOME/Downloads
+```
+
 ### NVIDIA-specific patches:
 ```
 sudo systemctl enable nvidia-resume
