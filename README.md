@@ -17,7 +17,7 @@ sudo pacman -Rns pokit-kde-agent wofi kwallet dolphin
 ```
 Basic utils for Hyprland:
 ```
-yay -S xdg-desktop-portal-gtk xdg-desktop-portal-hyprland hyprshutdown hyprpolkitagent hyprlauncher hyprlock hypridle hyprpaper hyprshot wl-clipboard brightnessctl ghostty qt6ct qt6-wayland hyprqt6engine pipewire pipewire-pulse wireplumber baobab nautilus gnome-keyring
+yay -S xdg-desktop-portal-gtk xdg-desktop-portal-hyprland hyprshutdown hyprpolkitagent hyprlauncher hyprlock hypridle hyprpaper hyprshot wl-clipboard brightnessctl ghostty qt6ct qt6-wayland hyprqt6engine pipewire pipewire-pulse wireplumber baobab nautilus gnome-keyring loupe decibels showtime snapshot
 ```
 Quality-of-Life Packages:
 ```
