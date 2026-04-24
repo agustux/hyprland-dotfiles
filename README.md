@@ -37,6 +37,10 @@ mkdir $HOME/Pictures
 mkdir $HOME/Videos
 mkdir $HOME/Downloads
 ```
+Make for Hyprshot:
+```
+mkdir $HOME/Pictures/Screenshots
+```
 
 ### NVIDIA-specific patches:
 ```
@@ -44,7 +48,7 @@ sudo systemctl enable nvidia-resume
 sudo systemctl enable nvidia-suspend
 sudo systemctl enable nvidia-hibernate
 
-sudo sed -i 's/GRUB_CMDLINE_LINUX_DEFAULT=.*/GRUB_CMDLINE_LINUX_DEFAULT="loglevel=3 intel_iommu=on iommu=pt nvidia.NVreg_PreserveVideoMemoryAllocations=1"/' /etc/default/grub
+sudo sed -i 's/GRUB_CMDLINE_LINUX_DEFAULT=.*/GRUB_CMDLINE_LINUX_DEFAULT="loglevel=3 intel_iommu=on iommu=pt nvidia.NVreg_PreserveVideoMemoryAllocations=1 nvidia_drm.modeset=1"/' /etc/default/grub
 sudo grub-mkconfig -o /boot/grub/grub.cfg
 ```
 May be required (according to the hyprland wiki), not necessary in my experience:
