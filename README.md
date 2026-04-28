@@ -57,7 +57,7 @@ sudo sed -i 's/MODULES=.*/MODULES=(nvidia nvidia_modeset nvidia_uvm nvidia_drm)/
 sudo mkinitcpio -P
 ```
 
-![Example of my rice](assets/2026-04-25-154512_hyprshot.png)
+![Example of my rice](https://github.com/agustux/hyprland-dotfiles/blob/main/assets/2026-04-24-231146_hyprshot.png)
 
 Credits to these dotfile repos, heavily influenced this one:
 https://github.com/nadeemohc/dotfiles-hyprland-.git/
