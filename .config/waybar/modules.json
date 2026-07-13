@@ -1,9 +1,4 @@
 {
-    "custom/arch": {
-        "format": "󰣇",
-        "tooltip": false
-    },
-
     "wireplumber": {
         "format": "{icon}  {volume}%",
         "scroll-step": 5,
