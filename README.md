@@ -19,6 +19,8 @@ Basic utils for Hyprland:
 ```
 yay -S hyprland xdg-desktop-portal-gtk xdg-desktop-portal-hyprland hyprshutdown hyprpolkitagent hyprlauncher hyprlock hypridle hyprpaper hyprshot wl-clipboard dunst brightnessctl ghostty qt6ct qt6-wayland hyprqt6engine pipewire pipewire-pulse wireplumber baobab nautilus gnome-keyring loupe decibels showtime snapshot
 ```
+You may need to rebuild hyprpolkitagent for correct library versions or smth 
+
 Quality-of-Life Packages:
 ```
 yay -S curl vim neovim less man ufw rsync powertop nvtop lm_sensors cpupower fastfetch bat intel-undervolt bash-completion
