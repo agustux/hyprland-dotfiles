@@ -77,6 +77,7 @@ hl.monitor({
 
 -- exec-once = waybar & hyprpaper & firefox
 hl.on("hyprland.start", function()
+    hl.exec_cmd("/usr/bin/ghostty --gtk-single-instance=true")
     hl.exec_cmd("hyprpaper")
     hl.exec_cmd("hypridle")
     hl.exec_cmd("/usr/lib/hyprpolkitagent/hyprpolkitagent")
