@@ -532,9 +532,10 @@ hl.bind(var_mainMod .. " + SHIFT + J", hl.dsp.window.swap({ direction = "down" }
 -- Toggle hiding/showing waybar
 hl.bind(var_mainMod .. " + W", hl.dsp.exec_cmd("killall waybar || waybar"))
 
--- Example special workspace (scratchpad)
-hl.bind(var_mainMod .. " + S", hl.dsp.workspace.toggle_special("magic"))
-hl.bind(var_mainMod .. " + SHIFT + S", hl.dsp.window.move({ workspace = "special:magic" }))
+-- Ghostty's gulag special workspace (scratchpad)
+hl.bind(var_mainMod .. " + S", hl.dsp.workspace.toggle_special("ghoulag"))
+hl.bind(var_mainMod .. " + SHIFT + S", hl.dsp.window.move({ workspace = "special:ghoulag" }))
+
 
 -- Scroll through existing workspaces with mainMod + scroll
 hl.bind(var_mainMod .. " + mouse_down", hl.dsp.focus({ workspace = "e+1" }))
@@ -627,4 +628,11 @@ hl.window_rule({
     },
     move = "20 monitor_h-120",
     float = true,
+})
+
+-- Ghoulag rule
+hl.workspace_rule({
+    workspace = "special:ghoulag",
+    gaps_in = 20,
+    gaps_out = 80
 })
