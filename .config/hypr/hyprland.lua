@@ -45,7 +45,7 @@ hl.monitor({
 hl.monitor({
     output = "",
     disabled = false,
-    mode = "preferred",
+    mode = "1920x1080@60",
     position = "auto",
     scale = 1,
     mirror = "eDP-1",
@@ -536,6 +536,8 @@ hl.bind(var_mainMod .. " + W", hl.dsp.exec_cmd("killall waybar || waybar"))
 hl.bind(var_mainMod .. " + S", hl.dsp.workspace.toggle_special("ghoulag"))
 hl.bind(var_mainMod .. " + SHIFT + S", hl.dsp.window.move({ workspace = "special:ghoulag" }))
 
+-- Hyprlock
+hl.bind(var_mainMod .. " + SHIFT + Q", hl.dsp.exec_cmd("loginctl lock-session"))
 
 -- Scroll through existing workspaces with mainMod + scroll
 hl.bind(var_mainMod .. " + mouse_down", hl.dsp.focus({ workspace = "e+1" }))
