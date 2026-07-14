@@ -529,6 +529,9 @@ hl.bind(var_mainMod .. " + SHIFT + L", hl.dsp.window.swap({ direction = "right" 
 hl.bind(var_mainMod .. " + SHIFT + K", hl.dsp.window.swap({ direction = "up" }))
 hl.bind(var_mainMod .. " + SHIFT + J", hl.dsp.window.swap({ direction = "down" }))
 
+-- Toggle hiding/showing waybar
+hl.bind(var_mainMod .. " + W", hl.dsp.exec_cmd("killall waybar || waybar"))
+
 -- Example special workspace (scratchpad)
 hl.bind(var_mainMod .. " + S", hl.dsp.workspace.toggle_special("magic"))
 hl.bind(var_mainMod .. " + SHIFT + S", hl.dsp.window.move({ workspace = "special:magic" }))
