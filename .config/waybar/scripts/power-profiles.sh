@@ -2,7 +2,7 @@
 
 choice=$(printf "󰂅  Performance\n󰂀  Balanced\n󱈏  Power Saver" | \
     rofi -dmenu -i -p "Power Mode" \
-    -theme-str 'element-text { font: "JetBrainsMono Nerd Font 18"; } listview { lines: 3; } window { width: 21%; }')
+    -theme-str 'element-text { font: "JetBrainsMono Nerd Font 15"; } listview { lines: 3; } window { width: 21%; }')
 
 case "$choice" in
     *Performance*)

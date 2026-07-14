@@ -19,9 +19,9 @@ window#waybar {
 .modules-center,
 .modules-right {
     background: #0b1220; /* dark navy pill background */
-    margin: 5px 10px;
+    margin: 3px 6px 1px 6px;
     padding: 0 4px;
-    border-radius: 50px;
+    border-radius: 15px;
 }
 
 .modules-left {
@@ -82,10 +82,15 @@ window#waybar {
         JetbrainsMono Nerd Font,
         feather;
     font-weight: 900;
-    font-size: 13pt;
+    font-size: 12pt;
     color: #e6e8ee; /* inactive workspace text */
     border: none;
     border-radius: 50px;
+    min-width: 30px;
+    min-height: 30px;
+    padding: 0;
+    margin: 1px;
+
 }
 
 /* Active workspace pill */
@@ -119,7 +124,7 @@ window#waybar {
 #custom-power {
     padding: 0 12px;
     border-radius: 50px;
-    font-size: 17px;
+    font-size: 13px;
     color: #32bfee;
 }
 
