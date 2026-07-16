@@ -29,6 +29,11 @@ More specific packages for my rice (fonts and waybar):
 ```
 yay -S tff-dejavu ttf-jetbrains-mono-nerd ttf-nerd-fonts-symbols-mono ttf-nerd-fonts-symbols noto-fonts-emoji waybar rofi networkmanager-dmenu power-profiles-daemon pavucontrol rofi-bluetooth-git nm-connection-editor blueman
 ```
+Graphics Stuff:
+```
+yay -S --needed --noconfirm mesa lib32-mesa vulkan-intel vulkan-icd-loader lib32-vulkan-icd-loader libdrm lib32-libdrm nvidia-utils lib32-nvidia-utils nvidia-open-dkms lib32-glibc lib32-gcc-libs lib32-libglvnd lib32-wayland lib32-libx11 lib32-libxcb lib32-libpulse lib32-libpipewire lib32-alsa-lib lib32-alsa-plugins intel-media-driver libva-intel-driver
+```
+
 Should now be able to copy the contents of .config into your ~/.config
 
 Make these directories for Nautilus bookmarks:
