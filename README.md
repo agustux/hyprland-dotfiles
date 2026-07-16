@@ -39,6 +39,7 @@ mkdir $HOME/Pictures
 mkdir $HOME/Videos
 mkdir $HOME/Downloads
 ```
+
 Make for Hyprshot:
 ```
 mkdir $HOME/Pictures/Screenshots
@@ -52,6 +53,33 @@ sudo systemctl enable nvidia-hibernate
 
 sudo sed -i 's/GRUB_CMDLINE_LINUX_DEFAULT=.*/GRUB_CMDLINE_LINUX_DEFAULT="loglevel=3 intel_iommu=on iommu=pt nvidia.NVreg_PreserveVideoMemoryAllocations=1 nvidia_drm.modeset=1"/' /etc/default/grub
 sudo grub-mkconfig -o /boot/grub/grub.cfg
+
+sudo tee /etc/modprobe.d/nvidia-pm.conf > /dev/null << 'EOF'
+options nvidia NVreg_DynamicPowerManagement=0x02
+options nvidia NVreg_EnableGpuFirmware=0
+EOF
+
+sudo tee /etc/udev/rules.d/80-nvidia-pm.rules > /dev/null << 'EOF'
+ACTION=="add", SUBSYSTEM=="pci", ATTR{vendor}=="0x10de", ATTR{class}=="0x0c0330", ATTR{remove}="1"
+ACTION=="add", SUBSYSTEM=="pci", ATTR{vendor}=="0x10de", ATTR{class}=="0x0c8000", ATTR{remove}="1"
+ACTION=="add", SUBSYSTEM=="pci", ATTR{vendor}=="0x10de", ATTR{class}=="0x040300", ATTR{remove}="1"
+ACTION=="bind", SUBSYSTEM=="pci", ATTR{vendor}=="0x10de", ATTR{class}=="0x030000", TEST=="power/control", ATTR{power/control}="auto"
+ACTION=="bind", SUBSYSTEM=="pci", ATTR{vendor}=="0x10de", ATTR{class}=="0x030200", TEST=="power/control", ATTR{power/control}="auto"
+ACTION=="unbind", SUBSYSTEM=="pci", ATTR{vendor}=="0x10de", ATTR{class}=="0x030000", TEST=="power/control", ATTR{power/control}="on"
+ACTION=="unbind", SUBSYSTEM=="pci", ATTR{vendor}=="0x10de", ATTR{class}=="0x030200", TEST=="power/control", ATTR{power/control}="on"
+EOF
+
+sudo mkinitcpio -P
+
+mkdir -p ~/.config/hypr
+IGPU_PCI=$(lspci -D | grep -i "VGA compatible controller: Intel" | head -1 | cut -d' ' -f1)
+if [ -n "$IGPU_PCI" ]; then
+  ln -sf "/dev/dri/by-path/pci-${IGPU_PCI}-card" ~/.config/hypr/igpu-card
+  echo "iGPU symlink -> pci-${IGPU_PCI}-card"
+fi
+
+grep -qxF 'export AQ_DRM_DEVICES=$HOME/.config/hypr/igpu-card' ~/.bash_profile || \
+  echo 'export AQ_DRM_DEVICES=$HOME/.config/hypr/igpu-card' >> ~/.bash_profile
 ```
 May be required (according to the hyprland wiki), not necessary in my experience:
 ```
