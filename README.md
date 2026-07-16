@@ -75,7 +75,6 @@ mkdir -p ~/.config/hypr
 IGPU_PCI=$(lspci -D | grep -i "VGA compatible controller: Intel" | head -1 | cut -d' ' -f1)
 if [ -n "$IGPU_PCI" ]; then
   ln -sf "/dev/dri/by-path/pci-${IGPU_PCI}-card" ~/.config/hypr/igpu-card
-  echo "iGPU symlink -> pci-${IGPU_PCI}-card"
 fi
 
 grep -qxF 'export AQ_DRM_DEVICES=$HOME/.config/hypr/igpu-card' ~/.bash_profile || \
