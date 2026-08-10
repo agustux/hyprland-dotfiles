@@ -355,6 +355,7 @@ hl.bind(var_mainMod .. " + V", hl.dsp.window.float({ action = "toggle" }))
 hl.bind(var_mainMod .. " + R", hl.dsp.exec_cmd("rofi -show drun"))
 hl.bind(var_mainMod .. " + P", hl.dsp.window.pseudo())
 hl.bind(var_mainMod .. " + T", hl.dsp.layout("togglesplit"))
+hl.bind(var_mainMod .. " + F", hl.dsp.window.fullscreen({ mode = "fullscreen", action = "toggle" }))   
 
 -- Hyprshot and PrtSc key
 hl.bind("PRINT", hl.dsp.exec_cmd("hyprshot -m region -o $HOME/Pictures/Screenshots/"))
