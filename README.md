@@ -95,6 +95,17 @@ sudo sed -i 's/MODULES=.*/MODULES=(nvidia nvidia_modeset nvidia_uvm nvidia_drm)/
 sudo mkinitcpio -P
 ```
 
+To disable hyprland mascot wallpaper:
+```
+sed -i 's|/usr/share/hypr/wall2\.png|/usr/share/hypr/wall0.png|g' ~/.config/hypr/hyprpaper.conf
+sed -i 's|/usr/share/hypr/wall2\.png|/usr/share/hypr/wall0.png|g' ~/.config/hypr/hyprlock.conf
+sed -i \
+  -e 's/^\( *force_default_wallpaper = \)[0-9]*,/\11,/' \
+  -e 's/^\( *disable_hyprland_logo = \)false,/\1true,/' \
+  $HOME/.config/hypr/hyprland.lua
+```
+
+
 ![Example of my rice](https://github.com/agustux/hyprland-dotfiles/blob/main/assets/2026-04-24-231146_hyprshot.png)
 
 Credits to these dotfile repos, heavily influenced this one:
