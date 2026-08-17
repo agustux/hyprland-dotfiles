@@ -77,13 +77,17 @@ EOF
 sudo mkinitcpio -P
 
 mkdir -p ~/.config/hypr
-IGPU_PCI=$(lspci -D | grep -i "VGA compatible controller: Intel" | head -1 | cut -d' ' -f1)
-if [ -n "$IGPU_PCI" ]; then
-  ln -sf "/dev/dri/by-path/pci-${IGPU_PCI}-card" ~/.config/hypr/igpu-card
-fi
-
-grep -qxF 'export AQ_DRM_DEVICES=$HOME/.config/hypr/igpu-card' ~/.bash_profile || \
-  echo 'export AQ_DRM_DEVICES=$HOME/.config/hypr/igpu-card' >> ~/.bash_profile
+sed -i '/\[\[ -f ~\/\.bashrc \]\] && \. ~\/\.bashrc/i\
+IGPU_PCI=$(lspci -D | grep -i "VGA compatible controller: Intel" | head -1 | cut -d'"'"' '"'"' -f1)\
+DGPU_PRESENT=$(lspci -D | grep -iE "3D controller|VGA compatible controller" | grep -icE "NVIDIA|AMD/ATI")\
+if [ -n "$IGPU_PCI" ] \&\& [ "$DGPU_PRESENT" -gt 0 ]; then\
+\tmkdir -p "$HOME/.config/hypr"\
+\tln -sf "/dev/dri/by-path/pci-${IGPU_PCI}-card" "$HOME/.config/hypr/igpu-card"\
+\texport AQ_DRM_DEVICES="$HOME/.config/hypr/igpu-card"\
+else\
+\trm -f "$HOME/.config/hypr/igpu-card"\
+\tunset AQ_DRM_DEVICES\
+fi' ~/.bash_profile
 ```
 May be required (according to the hyprland wiki), not necessary in my experience:
 ```
