@@ -57,7 +57,23 @@ hl.env("XCURSOR_SIZE", "24")
 hl.env("HYPRCURSOR_SIZE", "24")
 
 -- Graphics Settings
-hl.env("LIBVA_DRIVER_NAME", "iHD")
+local function detect_libva_driver()
+	local h = io.popen("lspci -d ::0300")
+	local gpus = h:read("*a")
+	h:close()
+	if gpus:match("Intel") then
+		return "iHD"
+	elseif gpus:match("AMD") or gpus:match("ATI") then
+		return "radeonsi"
+	elseif gpus:match("NVIDIA") then
+		return "nvidia"
+	end
+	return "iHD" -- fallback
+end
+
+hl.env("LIBVA_DRIVER_NAME", detect_libva_driver())
+
+-- hl.env("LIBVA_DRIVER_NAME", "iHD")
 -- hl.env("__GLX_VENDOR_LIBRARY_NAME", "nvidia")
 hl.env("XDG_SESSION_TYPE", "wayland")
 -- hl.env("GBM_BACKEND", "nvidia-drm")
