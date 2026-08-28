@@ -78,7 +78,6 @@ hl.env("LIBVA_DRIVER_NAME", detect_libva_driver())
 hl.env("XDG_SESSION_TYPE", "wayland")
 -- hl.env("GBM_BACKEND", "nvidia-drm")
 hl.env("NVD_BACKEND", "direct")
-hl.env("WLR_NO_HARDWARE_CURSORS", "1")
 
 -- QT Theming
 hl.env("QT_QPA_PLATFORMTHEME", "hyprqt6engine")
@@ -318,6 +317,12 @@ hl.config({
     misc = {
         force_default_wallpaper = 2,
         disable_hyprland_logo = false,
+    },
+})
+
+hl.config({
+    cursor = {
+        no_hardware_cursors = true,
     },
 })
 
