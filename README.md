@@ -78,7 +78,7 @@ sudo mkinitcpio -P
 
 mkdir -p ~/.config/hypr
 sed -i '/\[\[ -f ~\/\.bashrc \]\] && \. ~\/\.bashrc/i\
-IGPU_PCI=$(lspci -D | grep -i "VGA compatible controller: Intel" | head -1 | cut -d'"'"' '"'"' -f1)\
+IGPU_PCI=$(lspci -D | grep -i "VGA compatible controller" | head -1 | cut -d'"'"' '"'"' -f1)\
 DGPU_PRESENT=$(lspci -D | grep -iE "3D controller|VGA compatible controller" | grep -icE "NVIDIA|AMD/ATI")\
 if [ -n "$IGPU_PCI" ] \&\& [ "$DGPU_PRESENT" -gt 0 ]; then\
 \tmkdir -p "$HOME/.config/hypr"\
