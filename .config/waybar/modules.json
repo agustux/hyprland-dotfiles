@@ -18,7 +18,7 @@
     },
 
     "network": {
-        "format-wifi": " " ,
+        "format-wifi": " ",
         "tooltip": true,
         "tooltip-format": "SSID: {essid}\nSignal: {signalStrength}%\nSpeed: {bandwidthDownBits} ↓ / {bandwidthUpBits} ↑",
         "format-ethernet": "",
