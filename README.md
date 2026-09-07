@@ -1,8 +1,8 @@
 # hyprland-dotfiles
-My minimalistic Hyprland config for Arch Linux (on NVIDIA) inspired by GNOME
+My minimalistic Hyprland config for Arch Linux (incl. NVIDIA) inspired by GNOME
 
 ### Note:
-Many of these packages will require an AUR helper (yay).
+Many of these packages will require an AUR helper (yay):
 ```
 sudo pacman -S fakeroot debugedit
 sudo pacman -Sy --needed --noconfirm git base-devel && git clone https://aur.archlinux.org/yay-bin.git && cd yay-bin && makepkg -si
@@ -17,7 +17,10 @@ sudo pacman -Rns pokit-kde-agent wofi kwallet dolphin
 ```
 Basic utils for Hyprland:
 ```
-yay -S hyprland xdg-desktop-portal-gtk xdg-desktop-portal-hyprland hyprshutdown hyprpolkitagent hyprlock hypridle hyprpaper hyprshot wl-clipboard dunst adw-gtk-theme brightnessctl ghostty qt6ct qt6-wayland hyprqt6engine pipewire pipewire-pulse wireplumber baobab nautilus gnome-keyring loupe decibels showtime snapshot
+yay -S hyprland xdg-desktop-portal-gtk xdg-desktop-portal-hyprland hyprshutdown hyprpolkitagent \
+hyprlock hypridle hyprpaper hyprshot wl-clipboard dunst adw-gtk-theme brightnessctl ghostty qt6ct \
+qt6-wayland hyprqt6engine pipewire pipewire-pulse wireplumber baobab nautilus gnome-keyring loupe \
+decibels showtime snapshot
 ```
 You may need to rebuild hyprpolkitagent for correct library versions or smth 
 
@@ -25,13 +28,19 @@ Quality-of-Life Packages:
 ```
 yay -S curl vim neovim less man ufw rsync powertop nvtop lm_sensors cpupower fastfetch bat intel-undervolt bash-completion
 ```
-More specific packages for my rice (fonts and waybar):
+More specific packages for my rice (fonts, waybar, and nvim):
 ```
-yay -S tff-dejavu ttf-jetbrains-mono-nerd ttf-nerd-fonts-symbols-mono ttf-nerd-fonts-symbols noto-fonts-emoji waybar rofi networkmanager-dmenu power-profiles-daemon pavucontrol rofi-bluetooth-git nm-connection-editor blueman
+yay -S tff-dejavu ttf-jetbrains-mono-nerd ttf-nerd-fonts-symbols-mono ttf-nerd-fonts-symbols \
+noto-fonts-emoji waybar rofi networkmanager-dmenu power-profiles-daemon pavucontrol rofi-bluetooth-git \
+nm-connection-editor blueman tree-sitter-cli lua-language-server bash-language-server pyright clang
+
 ```
-Graphics Stuff:
+Graphics Stuff (plus NVIDIA):
 ```
-yay -S --needed --noconfirm mesa lib32-mesa vulkan-intel vulkan-icd-loader lib32-vulkan-icd-loader libdrm lib32-libdrm nvidia-utils lib32-nvidia-utils nvidia-open-dkms lib32-glibc lib32-gcc-libs lib32-libglvnd lib32-wayland lib32-libx11 lib32-libxcb lib32-libpulse lib32-libpipewire lib32-alsa-lib lib32-alsa-plugins intel-media-driver libva-intel-driver
+yay -S --needed --noconfirm mesa lib32-mesa vulkan-intel vulkan-icd-loader lib32-vulkan-icd-loader \
+libdrm lib32-libdrm nvidia-utils lib32-nvidia-utils nvidia-open-dkms lib32-glibc lib32-gcc-libs lib32-libglvnd \
+lib32-wayland lib32-libx11 lib32-libxcb lib32-libpulse lib32-libpipewire lib32-alsa-lib lib32-alsa-plugins \
+intel-media-driver libva-intel-driver
 ```
 
 Should now be able to copy the contents of .config into your ~/.config
@@ -94,18 +103,6 @@ May be required (according to the hyprland wiki), not necessary in my experience
 sudo sed -i 's/MODULES=.*/MODULES=(nvidia nvidia_modeset nvidia_uvm nvidia_drm)/' /etc/mkinitcpio.conf
 sudo mkinitcpio -P
 ```
-
-To disable hyprland mascot wallpaper:
-```
-sed -i 's|/usr/share/hypr/wall2\.png|/usr/share/hypr/wall0.png|g' ~/.config/hypr/hyprpaper.conf
-sed -i 's|/usr/share/hypr/wall2\.png|/usr/share/hypr/wall0.png|g' ~/.config/hypr/hyprlock.conf
-sed -i \
-  -e 's/^\( *force_default_wallpaper = \)[0-9]*,/\11,/' \
-  -e 's/^\( *disable_hyprland_logo = \)false,/\1true,/' \
-  $HOME/.config/hypr/hyprland.lua
-```
-
-
 ![Example of my rice](https://github.com/agustux/hyprland-dotfiles/blob/main/assets/2026-09-04-001931_hyprshot.png)
 
 Credits to these dotfile repos, heavily influenced this one:
