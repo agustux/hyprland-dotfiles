@@ -379,9 +379,9 @@ hl.bind(var_mainMod .. " + T", hl.dsp.layout("togglesplit"))
 hl.bind(var_mainMod .. " + F", hl.dsp.window.fullscreen({ mode = "fullscreen", action = "toggle" }))   
 
 -- Hyprshot and PrtSc key
-hl.bind("PRINT", hl.dsp.exec_cmd("hyprshot -m region -o $HOME/Pictures/Screenshots/"))
-hl.bind("ALT + PRINT", hl.dsp.exec_cmd("hyprshot -m window -o $HOME/Pictures/Screenshots/"))
-hl.bind(var_mainMod .. " + PRINT", hl.dsp.exec_cmd("hyprshot -m output -m eDP-1 -o $HOME/Pictures/Screenshots/"))
+hl.bind("PRINT", hl.dsp.exec_cmd("pidof hyprshot || hyprshot -m region -o $HOME/Pictures/Screenshots/"))
+hl.bind("ALT + PRINT", hl.dsp.exec_cmd("pidof hyprshot || hyprshot -m window -o $HOME/Pictures/Screenshots/"))
+hl.bind(var_mainMod .. " + PRINT", hl.dsp.exec_cmd("pidof hyprshot || hyprshot -m output -m eDP-1 -o $HOME/Pictures/Screenshots/"))
 
 -- Move focus with mainMod + arrow keys
 hl.bind(var_mainMod .. " + H", hl.dsp.focus({ direction = "left" }))
