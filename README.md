@@ -1,5 +1,5 @@
 # hyprland-dotfiles
-My minimalistic Hyprland config for Arch Linux (incl. NVIDIA) inspired by GNOME
+My Minimalistic Hyprland config for Arch (incl. NVIDIA) inspired by GNOME
 
 ### Note:
 Many of these packages will require an AUR helper (yay):
@@ -8,6 +8,7 @@ sudo pacman -S fakeroot debugedit
 sudo pacman -Sy --needed --noconfirm git base-devel && git clone https://aur.archlinux.org/yay-bin.git && cd yay-bin && makepkg -si
 cd ../ && rm -rf yay-bin/
 ```
+You can check out more on the Neovim setup included [here](https://github.com/agustux/nvim-dotfiles)
 
 ## Installation:
 
