@@ -16,6 +16,7 @@ local plugins = {
 	"https://github.com/hrsh7th/nvim-cmp",
 	"https://github.com/hrsh7th/cmp-nvim-lsp",
     "https://github.com/L3MON4D3/LuaSnip",
+    "https://github.com/nvim-lualine/lualine.nvim",
 	{
 		src = "https://github.com/nvim-telescope/telescope-fzf-native.nvim",
 		data = { build = "make" }
