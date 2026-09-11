@@ -114,10 +114,10 @@ hl.config({
     general = {
         col = {
             active_border = {
-                colors = {"rgba(33ccffee)", "rgba(00ff99ee)"},
+                colors = {"rgba(74c7ecee)", "rgba(a6e3a1ee)"},
                 angle = 45,
             },
-            inactive_border = "rgba(595959aa)",
+            inactive_border = "rgba(585b70aa)",
         },
     },
 })
@@ -125,7 +125,7 @@ hl.config({
 -- Set to true enable resizing windows by clicking and dragging on borders and gaps
 hl.config({
     general = {
-        resize_on_border = false,
+        resize_on_border = true,
     },
 })
 
@@ -317,6 +317,8 @@ hl.config({
     misc = {
         force_default_wallpaper = 0,
         disable_hyprland_logo = true,
+       --force_default_wallpaper = 2,
+       --disable_hyprland_logo = false,
     },
 })
 
