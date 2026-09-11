@@ -19,7 +19,7 @@ echo '[ -f ~/.config/bash/bashrc ] && . ~/.config/bash/bashrc' > ~/.bashrc
 ```
 Clearing bloat and possibly conflicting packages:
 ```
-sudo pacman -Rns pokit-kde-agent wofi kwallet dolphin
+sudo pacman -Rns polkit-kde-agent wofi kwallet dolphin
 ```
 Basic utils for Hyprland:
 ```
@@ -36,7 +36,7 @@ yay -S curl vim neovim less man ufw rsync powertop nvtop lm_sensors cpupower fas
 ```
 More specific packages for my rice (fonts, waybar, and nvim):
 ```
-yay -S tff-dejavu ttf-jetbrains-mono-nerd ttf-nerd-fonts-symbols-mono ttf-nerd-fonts-symbols \
+yay -S ttf-dejavu ttf-jetbrains-mono-nerd ttf-nerd-fonts-symbols-mono ttf-nerd-fonts-symbols \
 noto-fonts-emoji waybar rofi networkmanager-dmenu power-profiles-daemon pavucontrol rofi-bluetooth-git \
 nm-connection-editor blueman tree-sitter-cli lua-language-server bash-language-server pyright clang
 
@@ -71,9 +71,7 @@ sudo systemctl enable nvidia-resume
 sudo systemctl enable nvidia-suspend
 sudo systemctl enable nvidia-hibernate
 
-sudo sed -i 's/GRUB_CMDLINE_LINUX_DEFAULT=.*/GRUB_CMDLINE_LINUX_DEFAULT="loglevel=3 intel_iommu=on iommu=pt nvidia.NVreg_PreserveVideoMemoryAllocations=1 nvidia_drm.modeset=1"/' /etc/default/grub
 echo " loglevel=3 iommu=pt nvidia.NVreg_PreserveVideoMemoryAllocations=1 nvidia_drm.modeset=1" | sudo tee -a /etc/kernel/cmdline
-sudo grub-mkconfig -o /boot/grub/grub.cfg
 sudo mkinitcpio -P
 
 sudo tee /etc/modprobe.d/nvidia-pm.conf > /dev/null << 'EOF'
@@ -94,17 +92,25 @@ EOF
 sudo mkinitcpio -P
 
 mkdir -p ~/.config/hypr
-sed -i '/\[\[ -f ~\/\.bashrc \]\] && \. ~\/\.bashrc/i\
-IGPU_PCI=$(lspci -D | grep -i "VGA compatible controller" | head -1 | cut -d'"'"' '"'"' -f1)\
-DGPU_PRESENT=$(lspci -D | grep -iE "3D controller|VGA compatible controller" | grep -icE "NVIDIA|AMD/ATI")\
-if [ -n "$IGPU_PCI" ] \&\& [ "$DGPU_PRESENT" -gt 0 ]; then\
-\tmkdir -p "$HOME/.config/hypr"\
-\tln -sf "/dev/dri/by-path/pci-${IGPU_PCI}-card" "$HOME/.config/hypr/igpu-card"\
-\texport AQ_DRM_DEVICES="$HOME/.config/hypr/igpu-card"\
-else\
-\trm -f "$HOME/.config/hypr/igpu-card"\
-\tunset AQ_DRM_DEVICES\
-fi' ~/.bash_profile
+tee -a ~/.bash_profile > /dev/null << 'EOF'
+# GPU detection for Hyprland/aquamarine (portable across machines)
+GPUS=$(for f in /sys/bus/pci/devices/*/class; do
+    read -r c < "$f"
+    case "$c" in 0x030000|0x030200) basename "$(dirname "$f")" ;; esac
+done)
+IGPU_PCI=$(awk -F: '$2=="00"{print;exit}' <<< "$GPUS")
+DGPU_PCI=$(awk -F: '$2!="00"{print;exit}' <<< "$GPUS")
+[ -z "$IGPU_PCI" ] && { IGPU_PCI="$DGPU_PCI"; DGPU_PCI=""; }
+
+if [ -n "$IGPU_PCI" ] && [ -n "$DGPU_PCI" ]; then
+    mkdir -p "$HOME/.config/hypr"
+    ln -sf "/dev/dri/by-path/pci-${IGPU_PCI}-card" "$HOME/.config/hypr/igpu-card"
+    export AQ_DRM_DEVICES="$HOME/.config/hypr/igpu-card"
+else
+    rm -f "$HOME/.config/hypr/igpu-card"
+    unset AQ_DRM_DEVICES
+fi
+EOF
 ```
 May be required (according to the hyprland wiki), not necessary in my experience:
 ```
