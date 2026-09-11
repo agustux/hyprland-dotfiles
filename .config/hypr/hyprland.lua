@@ -1,6 +1,7 @@
 local var_mainMod = "SUPER"
 local var_terminal = "ghostty"
 local var_fileManager = "nautilus"
+local var_browser = "brave-origin"
 
 -- ###############
 -- ## MONITORS ###
@@ -369,9 +370,10 @@ hl.device({
 
 -- Example binds, see https://wiki.hypr.land/Configuring/Binds/ for more
 hl.bind(var_mainMod .. " + Q", hl.dsp.exec_cmd(var_terminal))
+hl.bind(var_mainMod .. " + E", hl.dsp.exec_cmd(var_fileManager))
+hl.bind(var_mainMod .. " + B", hl.dsp.exec_cmd(var_browser))
 hl.bind(var_mainMod .. " + C", hl.dsp.window.close())
 hl.bind(var_mainMod .. " + M", hl.dsp.exec_cmd("command -v hyprshutdown >/dev/null 2>&1 && hyprshutdown || hyprctl dispatch exit"))
-hl.bind(var_mainMod .. " + E", hl.dsp.exec_cmd(var_fileManager))
 hl.bind(var_mainMod .. " + V", hl.dsp.window.float({ action = "toggle" }))
 hl.bind(var_mainMod .. " + R", hl.dsp.exec_cmd("rofi -show drun"))
 hl.bind(var_mainMod .. " + P", hl.dsp.window.pseudo())
