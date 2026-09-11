@@ -1,6 +1,8 @@
 # hyprland-dotfiles
 My Minimalistic Hyprland config for Arch (incl. NVIDIA) inspired by GNOME
 
+![Example of my rice](https://github.com/agustux/hyprland-dotfiles/blob/main/assets/2026-09-11-142304_hyprshot.png)
+
 ### Note:
 Many of these packages will require an AUR helper (yay):
 ```
@@ -109,8 +111,6 @@ May be required (according to the hyprland wiki), not necessary in my experience
 sudo sed -i 's/MODULES=.*/MODULES=(nvidia nvidia_modeset nvidia_uvm nvidia_drm)/' /etc/mkinitcpio.conf
 sudo mkinitcpio -P
 ```
-![Example of my rice](https://github.com/agustux/hyprland-dotfiles/blob/main/assets/2026-09-04-001931_hyprshot.png)
-
 Credits to these dotfile repos, heavily influenced this one:
 https://github.com/nadeemohc/dotfiles-hyprland-.git/
 https://github.com/shivam-salkar/minimal-waybar-config.git/
