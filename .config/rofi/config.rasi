@@ -12,10 +12,9 @@ configuration {
 * {
     font:   "JetBrainsMono Nerd Font 12";
 
-    bg0:     #0b1220;  /* Dark navy, Waybar background */
-    bg1:     #32bfee;  /* Waybar hover background */ /* Lighter navy */
-    fg0:     #e6e8ee;  /* Waybar main text color */
-
+    bg0:     #181825;  /* Dark navy, Waybar background */
+    bg1:     #74c7ec;  /* Waybar hover background */ /* Lighter navy */
+    fg0:     #cdd6f4;  /* Waybar main text color */
 
     background-color:   transparent;
     text-color:         @fg0;
@@ -23,7 +22,7 @@ configuration {
     padding:    0;
     spacing:    3;
     b-radius:	10px;
-    b-color:	#32bfee;
+    b-color:	#74c7ec;
 }
 
 window {
@@ -43,6 +42,11 @@ inputbar {
 
 prompt, entry, element-icon, element-text {
     vertical-align: 0.5;
+}
+
+element-text, element-icon {
+    background-color: inherit;
+    text-color: inherit;
 }
 
 prompt {
@@ -79,12 +83,9 @@ element normal active {
     text-color: @fg0;
 }
 
-element selected {
-    text-color: @fg0;
-}
-
 element selected normal, element selected active {
     background-color:   @bg1;
+    text-color: @bg0;
 }
 
 element selected urgent {
