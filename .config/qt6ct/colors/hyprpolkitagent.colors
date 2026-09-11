@@ -1,27 +1,26 @@
 [Colors:Window]
-BackgroundNormal=6,10,16
-ForegroundNormal=230,232,238
+BackgroundNormal=17,17,27
+ForegroundNormal=205,214,244
 
 [Colors:View]
-BackgroundNormal=11,18,32
-ForegroundNormal=230,232,238
-BackgroundAlternate=26,37,53
+BackgroundNormal=24,24,37
+ForegroundNormal=205,214,244
+BackgroundAlternate=49,50,68
 
 [Colors:Button]
-BackgroundNormal=11,18,32
-ForegroundNormal=230,232,238
+BackgroundNormal=24,24,37
+ForegroundNormal=205,214,244
 
 [Colors:Selection]
-BackgroundNormal=50,191,238
-ForegroundNormal=11,18,32
+BackgroundNormal=116,199,236
+ForegroundNormal=24,24,37
 
 [Colors:Tooltip]
-BackgroundNormal=26,37,53
-ForegroundNormal=230,232,238
+BackgroundNormal=49,50,68
+ForegroundNormal=205,214,244
 
 [WM]
-activeBackground=6,10,16
-activeForeground=230,232,238
-inactiveBackground=6,10,16
-inactiveForeground=230,232,238
-
+activeBackground=17,17,27
+activeForeground=205,214,244
+inactiveBackground=17,17,27
+inactiveForeground=205,214,244
