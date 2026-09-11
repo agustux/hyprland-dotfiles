@@ -1,26 +1,26 @@
 [global]
     font = JetBrainsMono Nerd Font 11
-    background = "#0b1220"
-    foreground = "#e6e8ee"
-    frame_color = "#32bfee"
+    background = "#181825"
+    foreground = "#cdd6f4"
+    frame_color = "#74c7ec"
     frame_width = 2
     corner_radius = 8
     origin = top-center
 
 [urgency_low]
-    background = "#0b1220"
-    foreground = "#e6e8ee"
-    frame_color = "#a8d4e0"
+    background = "#181825"
+    foreground = "#cdd6f4"
+    frame_color = "#89dceb"
     timeout = 5
 
 [urgency_normal]
-    background = "#0b1220"
-    foreground = "#e6e8ee"
-    frame_color = "#32bfee"
+    background = "#181825"
+    foreground = "#cdd6f4"
+    frame_color = "#74c7ec"
     timeout = 10
 
 [urgency_critical]
-    background = "#0b1220"
-    foreground = "#e6e8ee"
-    frame_color = "#e06c75"
+    background = "#181825"
+    foreground = "#cdd6f4"
+    frame_color = "#f38ba8"
     timeout = 0
