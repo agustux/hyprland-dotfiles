@@ -7,7 +7,7 @@
 /* Main Waybar window (transparent, pills handle bg) */
 window#waybar {
     background: transparent;
-    color: #e6e8ee; /* main foreground text */
+    color: #cdd6f4; /* main foreground text */
     font-family:
         JetbrainsMono Nerd Font,
         feather;
@@ -18,7 +18,7 @@ window#waybar {
 .modules-left,
 .modules-center,
 .modules-right {
-    background: #0b1220; /* dark navy pill background */
+    background: #181825; /* dark navy pill background */
     margin: 3px 6px 1px 6px;
     padding: 0 4px;
     border-radius: 15px;
@@ -72,7 +72,7 @@ window#waybar {
 #power-profiles-daemon:hover,
 #language:hover,
 #mpd:hover {
-    background: #0b1220; /* slightly lighter on hover */
+    background: #181825; /* slightly lighter on hover */
 }
 
 /* Workspace buttons */
@@ -83,7 +83,7 @@ window#waybar {
         feather;
     font-weight: 900;
     font-size: 12pt;
-    color: #e6e8ee; /* inactive workspace text */
+    color: #cdd6f4; /* inactive workspace text */
     border: none;
     border-radius: 50px;
     min-width: 30px;
@@ -95,14 +95,14 @@ window#waybar {
 
 /* Active workspace pill */
 #workspaces button.active {
-    background: #32bfee;
-    color: #0b1220;      /* dark text for contrast */
+    background: #74c7ec;
+    color: #181825;      /* dark text for contrast */
 }
 
 /* Hovered workspace */
 #workspaces button:hover {
-    background: #a8d4e0;
-    color: #0b1220;
+    background: #89dceb;
+    color: #181825;
     box-shadow: none;
 }
 
@@ -117,7 +117,7 @@ window#waybar {
 }
 
 #bluetooth:hover {
-    background: #0b1220;
+    background: #181825;
 }
 
 /* Power button */
@@ -125,11 +125,11 @@ window#waybar {
     padding: 0 12px;
     border-radius: 50px;
     font-size: 13px;
-    color: #32bfee;
+    color: #74c7ec;
 }
 
 #custom-power:hover {
-    background: #0b1220;
-    color: #e06c75;
+    background: #181825;
+    color: #f38ba8;
 }
 
