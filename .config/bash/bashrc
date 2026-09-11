@@ -1,0 +1,19 @@
+#
+# ~/.config/bash/bashrc
+#
+
+[[ $- != *i* ]] && return
+
+alias update='yay -Syu --noconfirm && yay -Scc --noconfirm && sudo rm -rf /var/cache/pacman/pkg/* ~/.cache/BraveSoftware/* ~/.cache/yay/*'
+alias ls='ls --color=auto'
+alias grep='grep --color=auto'
+PS1='[\u@\h \W]\$ '
+
+# Eternal, timestamped bash history
+export HISTFILESIZE=-1
+export HISTSIZE=-1
+export HISTTIMEFORMAT="[%F %T] "
+export HISTFILE=~/.bash_eternal_history
+export HISTCONTROL=erasedups:ignorespace
+[[ "$PROMPT_COMMAND" != *"history -a"* ]] && PROMPT_COMMAND="history -a; $PROMPT_COMMAND"
+
