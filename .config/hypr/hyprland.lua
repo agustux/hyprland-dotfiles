@@ -113,10 +113,7 @@ hl.config({
 hl.config({
     general = {
         col = {
-            active_border = {
-                colors = {"rgba(74c7ecee)", "rgba(a6e3a1ee)"},
-                angle = 45,
-            },
+            active_border = "rgba(74c7ecee)",
             inactive_border = "rgba(585b70aa)",
         },
     },
@@ -317,6 +314,7 @@ hl.config({
     misc = {
         force_default_wallpaper = 0,
         disable_hyprland_logo = true,
+        disable_splash_rendering = true,
        --force_default_wallpaper = 2,
        --disable_hyprland_logo = false,
     },
