@@ -11,7 +11,10 @@ cd ../ && rm -rf yay-bin/
 You can check out more on the Neovim setup included [here](https://github.com/agustux/nvim-dotfiles)
 
 ## Installation:
-
+Add stub to .bashrc to load .config/bashrc:
+```
+echo '[ -f ~/.config/bash/bashrc ] && . ~/.config/bash/bashrc' > ~/.bashrc
+```
 Clearing bloat and possibly conflicting packages:
 ```
 sudo pacman -Rns pokit-kde-agent wofi kwallet dolphin
@@ -67,7 +70,9 @@ sudo systemctl enable nvidia-suspend
 sudo systemctl enable nvidia-hibernate
 
 sudo sed -i 's/GRUB_CMDLINE_LINUX_DEFAULT=.*/GRUB_CMDLINE_LINUX_DEFAULT="loglevel=3 intel_iommu=on iommu=pt nvidia.NVreg_PreserveVideoMemoryAllocations=1 nvidia_drm.modeset=1"/' /etc/default/grub
+echo " loglevel=3 iommu=pt nvidia.NVreg_PreserveVideoMemoryAllocations=1 nvidia_drm.modeset=1" | sudo tee -a /etc/kernel/cmdline
 sudo grub-mkconfig -o /boot/grub/grub.cfg
+sudo mkinitcpio -P
 
 sudo tee /etc/modprobe.d/nvidia-pm.conf > /dev/null << 'EOF'
 options nvidia NVreg_DynamicPowerManagement=0x02
