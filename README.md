@@ -26,7 +26,7 @@ Basic utils for Hyprland:
 yay -S hyprland xdg-desktop-portal-gtk xdg-desktop-portal-hyprland hyprshutdown hyprpolkitagent \
 hyprlock hypridle hyprpaper hyprshot wl-clipboard dunst adw-gtk-theme brightnessctl ghostty qt6ct \
 qt6-wayland hyprqt6engine pipewire pipewire-pulse wireplumber baobab nautilus gnome-keyring loupe \
-decibels showtime snapshot
+decibels showtime snapshot xorg-xhost
 ```
 You may need to rebuild hyprpolkitagent for correct library versions or smth 
 
@@ -111,11 +111,6 @@ else
     unset AQ_DRM_DEVICES
 fi
 EOF
-```
-May be required (according to the hyprland wiki), not necessary in my experience:
-```
-sudo sed -i 's/MODULES=.*/MODULES=(nvidia nvidia_modeset nvidia_uvm nvidia_drm)/' /etc/mkinitcpio.conf
-sudo mkinitcpio -P
 ```
 Credits to these dotfile repos, heavily influenced this one:
 https://github.com/nadeemohc/dotfiles-hyprland-.git/
