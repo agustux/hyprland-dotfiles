@@ -1,18 +1,82 @@
+-- === VARIABLES ===
+
 local var_mainMod = "SUPER"
 local var_terminal = "ghostty"
+local var_terminal_flags = "--gtk-single-instance=true"
 local var_fileManager = "nautilus"
 local var_browser = "brave-origin"
 
--- ###############
--- ## MONITORS ###
--- ###############
+-- === HELPER FUNCTIONS ===
 
--- See https://wiki.hypr.land/Configuring/Monitors/
+-- Libva detection helper (sysfs, prefers iGPU on bus 00, falls back to any GPU)
+local function detect_libva_driver()
+	local h = io.popen([[
+		for d in /sys/bus/pci/devices/0000:00:*/; do
+			c=$(cat "$d/class" 2>/dev/null)
+			[ "${c:0:6}" = "0x0300" ] && cat "$d/vendor" 2>/dev/null
+		done
+	]])
+	local vendor = h:read("*a")
+	h:close()
+	if vendor == "" then
+		h = io.popen([[
+			for d in /sys/bus/pci/devices/*/; do
+				c=$(cat "$d/class" 2>/dev/null)
+				[ "${c:0:6}" = "0x0300" ] && cat "$d/vendor" 2>/dev/null
+			done
+		]])
+		vendor = h:read("*a")
+		h:close()
+	end
+	if vendor:match("0x8086") then
+		return "iHD"
+	elseif vendor:match("0x1002") then
+		return "radeonsi"
+	elseif vendor:match("0x10de") then
+		return "nvidia"
+	end
+	return "iHD"
+end
+
+local function detect_primary_output()
+	local h = io.popen([[
+		for f in /sys/class/drm/card*-*; do
+			[ "$(cat "$f/status" 2>/dev/null)" = connected ] || continue
+			basename "$f" | sed 's/^card[0-9]*-//'
+		done
+	]])
+	local names = {}
+	for line in h:lines() do table.insert(names, line) end
+	h:close()
+	for _, n in ipairs(names) do
+		if n:match("^eDP") or n:match("^LVDS") then return n end
+	end
+	return names[1] or "eDP-1"
+end
+
+local function detect_capped_mode(output)
+	local h = io.popen(string.format([[
+		f=$(ls -d /sys/class/drm/card*-%s 2>/dev/null | head -n1)
+		[ -n "$f" ] && cat "$f/modes"
+	]], output))
+	local native, best
+	for line in h:lines() do
+		local w, hgt = line:match("(%d+)x(%d+)")
+		w, hgt = tonumber(w), tonumber(hgt)
+		if not native then native = line end
+		if w and hgt and hgt <= 1080 and not best then best = line end
+	end
+	h:close()
+	return best or native or "preferred"
+end
+
+-- === MONITORS ===
+
 hl.monitor({
     output = "",
     disabled = false,
-    mode = "preferred",
-    position = "1920x1080@60",
+    mode = detect_capped_mode(detect_primary_output()),
+    position = "auto",
     scale = 1,
 })
 
@@ -20,62 +84,37 @@ hl.monitor({
 hl.monitor({
     output = "",
     disabled = false,
-    mode = "1920x1080@60",
+    mode = "preferred",
     position = "auto",
     scale = 1,
-    mirror = "eDP-1",
+    mirror = detect_primary_output(),
 })
 
--- ##################
--- ## MY PROGRAMS ###
--- ##################
-
--- ################
--- ## AUTOSTART ###
--- ################
+-- === AUTOSTART ===
 
 hl.on("hyprland.start", function()
-    hl.exec_cmd("/usr/bin/ghostty --gtk-single-instance=true")
+    hl.exec_cmd(var_terminal .. " " .. var_terminal_flags)
     hl.exec_cmd("hyprpaper")
+    hl.exec_cmd("waybar")
+    hl.exec_cmd("dunst")
     hl.exec_cmd("hypridle")
+
+    hl.exec_cmd("dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP PATH")
     hl.exec_cmd("/usr/lib/hyprpolkitagent/hyprpolkitagent")
     hl.exec_cmd("/usr/lib/xdg-desktop-portal-hyprland")
     hl.exec_cmd("/usr/lib/xdg-desktop-portal")
-    hl.exec_cmd("waybar")
-    hl.exec_cmd("dunst")
-    hl.exec_cmd("dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP PATH")
     hl.exec_cmd("gsettings set org.gnome.desktop.interface color-scheme \"prefer-dark\"")
     hl.exec_cmd("gsettings set org.gnome.desktop.interface gtk-theme \"adw-gtk3\"")
     hl.exec_cmd("xhost +SI:localuser:root")
 end)
 
--- ############################
--- ## ENVIRONMENT VARIABLES ###
--- ############################
+-- === ENVIRONMENT VARIABLES ===
 
--- See https://wiki.hypr.land/Configuring/Environment-variables/
 hl.env("XCURSOR_SIZE", "24")
 hl.env("HYPRCURSOR_SIZE", "24")
 
--- Graphics Settings
-local function detect_libva_driver()
-	local h = io.popen("lspci -d ::0300")
-	local gpus = h:read("*a")
-	h:close()
-	if gpus:match("Intel") then
-		return "iHD"
-	elseif gpus:match("AMD") or gpus:match("ATI") then
-		return "radeonsi"
-	elseif gpus:match("NVIDIA") then
-		return "nvidia"
-	end
-	return "iHD" -- fallback
-end
 
 hl.env("LIBVA_DRIVER_NAME", detect_libva_driver())
-
--- hl.env("LIBVA_DRIVER_NAME", "iHD")
--- hl.env("__GLX_VENDOR_LIBRARY_NAME", "nvidia")
 hl.env("XDG_SESSION_TYPE", "wayland")
 -- hl.env("GBM_BACKEND", "nvidia-drm")
 hl.env("NVD_BACKEND", "direct")
@@ -95,13 +134,8 @@ hl.bind("switch:on:Lid Switch", hl.dsp.exec_cmd("systemctl suspend"), {
     locked = true,
 })
 
--- ####################
--- ## LOOK AND FEEL ###
--- ####################
+-- === LOOK AND FEEL ===
 
--- Refer to https://wiki.hypr.land/Configuring/Variables/
-
--- https://wiki.hypr.land/Configuring/Variables/#general
 hl.config({
     general = {
         gaps_in = 3,
@@ -110,7 +144,6 @@ hl.config({
     },
 })
 
--- https://wiki.hypr.land/Configuring/Variables/#variable-types for info about colors
 hl.config({
     general = {
         col = {
@@ -127,7 +160,6 @@ hl.config({
     },
 })
 
--- Please see https://wiki.hypr.land/Configuring/Tearing/ before you turn this on
 hl.config({
     general = {
         allow_tearing = false,
@@ -135,7 +167,6 @@ hl.config({
     },
 })
 
--- https://wiki.hypr.land/Configuring/Variables/#decoration
 hl.config({
     decoration = {
         rounding = 10,
@@ -143,181 +174,47 @@ hl.config({
     },
 })
 
--- Change transparency of focused and unfocused windows
 hl.config({
     decoration = {
-        active_opacity = 1.0,
-        inactive_opacity = 1.0,
         shadow = {
             enabled = false,
-            range = 4,
-            render_power = 3,
-            color = "rgba(1a1a1aee)",
         },
     },
 })
 
--- https://wiki.hypr.land/Configuring/Variables/#blur
 hl.config({
     decoration = {
         blur = {
             enabled = false,
-            size = 3,
-            passes = 1,
-            vibrancy = 0.1696,
         },
     },
 })
 
--- https://wiki.hypr.land/Configuring/Variables/#animations
 hl.config({
     animations = {
         enabled = false,
     },
 })
 
--- Default curves, see https://wiki.hypr.land/Configuring/Animations/#curves
-
--- NAME,           X0,   Y0,   X1,   Y1
-hl.curve("easeOutQuint", { type = "bezier", points = { {0.23, 1}, {0.32, 1} } })
-hl.curve("easeInOutCubic", { type = "bezier", points = { {0.65, 0.05}, {0.36, 1} } })
-hl.curve("linear", { type = "bezier", points = { {0, 0}, {1, 1} } })
-hl.curve("almostLinear", { type = "bezier", points = { {0.5, 0.5}, {0.75, 1} } })
-hl.curve("quick", { type = "bezier", points = { {0.15, 0}, {0.1, 1} } })
-
--- Default animations, see https://wiki.hypr.land/Configuring/Animations/
-hl.animation({
-    leaf = "global",
-    enabled = true,
-    speed = 10,
-    bezier = "default",
-})
-hl.animation({
-    leaf = "border",
-    enabled = true,
-    speed = 5.39,
-    bezier = "easeOutQuint",
-})
-hl.animation({
-    leaf = "windows",
-    enabled = true,
-    speed = 4.79,
-    bezier = "easeOutQuint",
-})
-hl.animation({
-    leaf = "windowsIn",
-    enabled = true,
-    speed = 4.1,
-    bezier = "easeOutQuint",
-    style = "popin 87%",
-})
-hl.animation({
-    leaf = "windowsOut",
-    enabled = true,
-    speed = 1.49,
-    bezier = "linear",
-    style = "popin 87%",
-})
-hl.animation({
-    leaf = "fadeIn",
-    enabled = true,
-    speed = 1.73,
-    bezier = "almostLinear",
-})
-hl.animation({
-    leaf = "fadeOut",
-    enabled = true,
-    speed = 1.46,
-    bezier = "almostLinear",
-})
-hl.animation({
-    leaf = "fade",
-    enabled = true,
-    speed = 3.03,
-    bezier = "quick",
-})
-hl.animation({
-    leaf = "layers",
-    enabled = true,
-    speed = 3.81,
-    bezier = "easeOutQuint",
-})
-hl.animation({
-    leaf = "layersIn",
-    enabled = true,
-    speed = 4,
-    bezier = "easeOutQuint",
-    style = "fade",
-})
-hl.animation({
-    leaf = "layersOut",
-    enabled = true,
-    speed = 1.5,
-    bezier = "linear",
-    style = "fade",
-})
-hl.animation({
-    leaf = "fadeLayersIn",
-    enabled = true,
-    speed = 1.79,
-    bezier = "almostLinear",
-})
-hl.animation({
-    leaf = "fadeLayersOut",
-    enabled = true,
-    speed = 1.39,
-    bezier = "almostLinear",
-})
-hl.animation({
-    leaf = "workspaces",
-    enabled = true,
-    speed = 1.94,
-    bezier = "almostLinear",
-    style = "fade",
-})
-hl.animation({
-    leaf = "workspacesIn",
-    enabled = true,
-    speed = 1.21,
-    bezier = "almostLinear",
-    style = "fade",
-})
-hl.animation({
-    leaf = "workspacesOut",
-    enabled = true,
-    speed = 1.94,
-    bezier = "almostLinear",
-    style = "fade",
-})
-hl.animation({
-    leaf = "zoomFactor",
-    enabled = true,
-    speed = 7,
-    bezier = "quick",
-})
-
--- See https://wiki.hypr.land/Configuring/Dwindle-Layout/ for more
 hl.config({
     dwindle = {
         preserve_split = true,
     },
 })
 
--- See https://wiki.hypr.land/Configuring/Master-Layout/ for more
 hl.config({
     master = {
         new_status = "master",
     },
 })
 
--- https://wiki.hypr.land/Configuring/Variables/#misc
 hl.config({
     misc = {
         force_default_wallpaper = 0,
         disable_hyprland_logo = true,
         disable_splash_rendering = true,
-       --force_default_wallpaper = 2,
-       --disable_hyprland_logo = false,
+	--force_default_wallpaper = 2,
+	--disable_hyprland_logo = false,
     },
 })
 
@@ -327,11 +224,8 @@ hl.config({
     },
 })
 
--- ############
--- ## INPUT ###
--- ############
+-- === INPUT ===
 
--- https://wiki.hypr.land/Configuring/Variables/#input
 hl.config({
     input = {
         kb_layout = "us",
@@ -347,54 +241,37 @@ hl.config({
     },
 })
 
--- See https://wiki.hypr.land/Configuring/Gestures
 hl.gesture({
     fingers = 3,
     direction = "horizontal",
     action = "workspace",
 })
 
--- Example per-device config
+-- === KEYBINDINGS ===
 
--- See https://wiki.hypr.land/Configuring/Keywords/#per-device-input-configs for more
-hl.device({
-    name = "epic-mouse-v1",
-    sensitivity = -0.5,
-})
-
--- ##################
--- ## KEYBINDINGS ###
--- ##################
-
--- See https://wiki.hypr.land/Configuring/Keywords/
-
--- Example binds, see https://wiki.hypr.land/Configuring/Binds/ for more
-hl.bind(var_mainMod .. " + Q", hl.dsp.exec_cmd(var_terminal))
+hl.bind(var_mainMod .. " + Q", hl.dsp.exec_cmd(var_terminal .. " " .. var_terminal_flags))
 hl.bind(var_mainMod .. " + E", hl.dsp.exec_cmd(var_fileManager))
 hl.bind(var_mainMod .. " + B", hl.dsp.exec_cmd(var_browser))
-hl.bind(var_mainMod .. " + C", hl.dsp.window.close())
-hl.bind(var_mainMod .. " + M", hl.dsp.exec_cmd("command -v hyprshutdown >/dev/null 2>&1 && hyprshutdown || hyprctl dispatch exit"))
-hl.bind(var_mainMod .. " + V", hl.dsp.window.float({ action = "toggle" }))
 hl.bind(var_mainMod .. " + R", hl.dsp.exec_cmd("rofi -show drun"))
+hl.bind(var_mainMod .. " + W", hl.dsp.exec_cmd("killall waybar || waybar"))
+hl.bind(var_mainMod .. " + SHIFT + Q", hl.dsp.exec_cmd("loginctl lock-session"))
+hl.bind(var_mainMod .. " + M", hl.dsp.exec_cmd("command -v hyprshutdown >/dev/null 2>&1 && hyprshutdown || hyprctl dispatch exit"))
+
+-- Hyprshot w/ PrtSc key
+hl.bind("PRINT", hl.dsp.exec_cmd("hyprshot -m region -o $HOME/Pictures/Screenshots/"))
+hl.bind("ALT + PRINT", hl.dsp.exec_cmd("hyprshot -m window -o $HOME/Pictures/Screenshots/"))
+hl.bind(var_mainMod .. " + PRINT", hl.dsp.exec_cmd("hyprshot -m output -m " .. detect_primary_output() .. " -o $HOME/Pictures/Screenshots/"))
+
+hl.bind(var_mainMod .. " + C", hl.dsp.window.close())
 hl.bind(var_mainMod .. " + P", hl.dsp.window.pseudo())
 hl.bind(var_mainMod .. " + T", hl.dsp.layout("togglesplit"))
-hl.bind(var_mainMod .. " + F", hl.dsp.window.fullscreen({ mode = "fullscreen", action = "toggle" }))   
-
--- Hyprshot and PrtSc key
-hl.bind("PRINT", hl.dsp.exec_cmd("pidof hyprshot || hyprshot -m region -o $HOME/Pictures/Screenshots/"))
-hl.bind("ALT + PRINT", hl.dsp.exec_cmd("pidof hyprshot || hyprshot -m window -o $HOME/Pictures/Screenshots/"))
-hl.bind(var_mainMod .. " + PRINT", hl.dsp.exec_cmd("pidof hyprshot || hyprshot -m output -m eDP-1 -o $HOME/Pictures/Screenshots/"))
+hl.bind(var_mainMod .. " + V", hl.dsp.window.float({ action = "toggle" }))
+hl.bind(var_mainMod .. " + F", hl.dsp.window.fullscreen({ mode = "fullscreen", action = "toggle" }))
 
 -- Move focus with mainMod + arrow keys
 hl.bind(var_mainMod .. " + H", hl.dsp.focus({ direction = "left" }))
-
--- bind = $mainMod, left, movefocus, l
 hl.bind(var_mainMod .. " + L", hl.dsp.focus({ direction = "right" }))
-
--- bind = $mainMod, right, movefocus, r
 hl.bind(var_mainMod .. " + K", hl.dsp.focus({ direction = "up" }))
-
--- bind = $mainMod, up, movefocus, u
 hl.bind(var_mainMod .. " + J", hl.dsp.focus({ direction = "down" }))
 
 -- Switch workspaces with mainMod + [0-9]
@@ -427,15 +304,10 @@ hl.bind(var_mainMod .. " + SHIFT + L", hl.dsp.window.swap({ direction = "right" 
 hl.bind(var_mainMod .. " + SHIFT + K", hl.dsp.window.swap({ direction = "up" }))
 hl.bind(var_mainMod .. " + SHIFT + J", hl.dsp.window.swap({ direction = "down" }))
 
--- Toggle hiding/showing waybar
-hl.bind(var_mainMod .. " + W", hl.dsp.exec_cmd("killall waybar || waybar"))
-
--- Ghostty's gulag special workspace (scratchpad)
+-- Ghostty's ghoulag special workspace (scratchpad)
 hl.bind(var_mainMod .. " + S", hl.dsp.workspace.toggle_special("ghoulag"))
 hl.bind(var_mainMod .. " + SHIFT + S", hl.dsp.window.move({ workspace = "special:ghoulag" }))
 
--- Hyprlock
-hl.bind(var_mainMod .. " + SHIFT + Q", hl.dsp.exec_cmd("loginctl lock-session"))
 
 -- Scroll through existing workspaces with mainMod + scroll
 hl.bind(var_mainMod .. " + mouse_down", hl.dsp.focus({ workspace = "e+1" }))
@@ -489,13 +361,7 @@ hl.bind("XF86AudioPrev", hl.dsp.exec_cmd("playerctl previous"), {
     locked = true,
 })
 
--- #############################
--- ## WINDOWS AND WORKSPACES ###
--- #############################
-
--- See https://wiki.hypr.land/Configuring/Window-Rules/ for more
-
--- See https://wiki.hypr.land/Configuring/Workspace-Rules/ for workspace rules
+-- === WINDOWS AND WORKSPACES ===
 
 -- Example windowrules that are useful
 hl.window_rule({
