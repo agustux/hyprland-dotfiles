@@ -10,7 +10,7 @@ sudo pacman -S fakeroot debugedit
 sudo pacman -Sy --needed --noconfirm git base-devel && git clone https://aur.archlinux.org/yay-bin.git && cd yay-bin && makepkg -si
 cd ../ && rm -rf yay-bin/
 ```
-You can check out more on the Neovim setup included [here](https://github.com/agustux/nvim-dotfiles)
+You can check out more on the Neovim setup included [here](https://github.com/agustux/nvim)
 
 ## Installation:
 Add stub to .bashrc to load .config/bashrc:
