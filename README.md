@@ -1,5 +1,6 @@
-# hyprland-dotfiles
-My Minimalistic Hyprland config for Arch (incl. NVIDIA) inspired by GNOME
+# My Hyprland Dotfiles
+My minimalistic and lightweight Hyprland config for Arch (incl. NVIDIA support) inspired by GNOME,
+in a catppuccin mocha theme.
 
 ![Example of my rice](https://github.com/agustux/hyprland-dotfiles/blob/main/assets/2026-09-11-142304_hyprshot.png)
 
