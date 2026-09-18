@@ -42,7 +42,7 @@ noto-fonts-emoji waybar rofi networkmanager-dmenu power-profiles-daemon pavucont
 nm-connection-editor blueman tree-sitter-cli lua-language-server bash-language-server pyright clang
 
 ```
-Graphics Stuff, NVIDIA libraries in [[README#NVIDIA-specific patches:|NVIDIA specific patches]]:
+Graphics Stuff (NVIDIA libraries at bottom):
 ```
 yay -S --needed --noconfirm mesa lib32-mesa vulkan-intel vulkan-icd-loader lib32-vulkan-icd-loader \
 libdrm lib32-libdrm lib32-glibc lib32-gcc-libs lib32-libglvnd \
