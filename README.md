@@ -42,16 +42,13 @@ noto-fonts-emoji waybar rofi networkmanager-dmenu power-profiles-daemon pavucont
 nm-connection-editor blueman tree-sitter-cli lua-language-server bash-language-server pyright clang
 
 ```
-Graphics Stuff (plus NVIDIA):
+Graphics Stuff, NVIDIA libraries in [[README#NVIDIA-specific patches:|NVIDIA specific patches]]:
 ```
 yay -S --needed --noconfirm mesa lib32-mesa vulkan-intel vulkan-icd-loader lib32-vulkan-icd-loader \
-libdrm lib32-libdrm nvidia-utils lib32-nvidia-utils nvidia-open-dkms lib32-glibc lib32-gcc-libs lib32-libglvnd \
+libdrm lib32-libdrm lib32-glibc lib32-gcc-libs lib32-libglvnd \
 lib32-wayland lib32-libx11 lib32-libxcb lib32-libpulse lib32-libpipewire lib32-alsa-lib lib32-alsa-plugins \
 intel-media-driver libva-intel-driver
 ```
-
-Should now be able to copy the contents of .config into your ~/.config
-
 Make these directories for Nautilus bookmarks:
 ```
 mkdir $HOME/Documents
@@ -64,6 +61,37 @@ mkdir $HOME/Downloads
 Make for Hyprshot:
 ```
 mkdir $HOME/Pictures/Screenshots
+```
+
+Should now be able to copy the contents of .config into your ~/.config:
+```
+cd $HOME && git clone https://github.com/agustux/hyprland-dotfiles.git
+cp -r $HOME/hyprland-dotfiles/.config/. $HOME/.config/
+```
+Add proper gpu detection fix for bash_profile:
+```
+tee -a ~/.bash_profile > /dev/null << 'EOF'
+# GPU detection for Hyprland/aquamarine (portable across machines)
+GPUS=$(for f in /sys/bus/pci/devices/*/class; do
+    read -r c < "$f"
+    case "$c" in 0x030000|0x030200) basename "$(dirname "$f")" ;; esac
+done)
+IGPU_PCI=$(awk -F: '$2=="00"{print;exit}' <<< "$GPUS")
+DGPU_PCI=$(awk -F: '$2!="00"{print;exit}' <<< "$GPUS")
+[ -z "$IGPU_PCI" ] && { IGPU_PCI="$DGPU_PCI"; DGPU_PCI=""; }
+
+if [ -n "$IGPU_PCI" ] && [ -n "$DGPU_PCI" ]; then
+    mkdir -p "$HOME/.config/hypr"
+    ln -sf "/dev/dri/by-path/pci-${IGPU_PCI}-card" "$HOME/.config/hypr/igpu-card"
+    export AQ_DRM_DEVICES="$HOME/.config/hypr/igpu-card"
+else
+    rm -f "$HOME/.config/hypr/igpu-card"
+    unset AQ_DRM_DEVICES
+fi
+```
+And link the ly config in .config to /etc/ly:
+```
+sudo ln -sf "$HOME/.config/ly/config.ini" /etc/ly/config.ini
 ```
 
 ### NVIDIA-specific patches:
@@ -92,26 +120,7 @@ EOF
 
 sudo mkinitcpio -P
 
-mkdir -p ~/.config/hypr
-tee -a ~/.bash_profile > /dev/null << 'EOF'
-# GPU detection for Hyprland/aquamarine (portable across machines)
-GPUS=$(for f in /sys/bus/pci/devices/*/class; do
-    read -r c < "$f"
-    case "$c" in 0x030000|0x030200) basename "$(dirname "$f")" ;; esac
-done)
-IGPU_PCI=$(awk -F: '$2=="00"{print;exit}' <<< "$GPUS")
-DGPU_PCI=$(awk -F: '$2!="00"{print;exit}' <<< "$GPUS")
-[ -z "$IGPU_PCI" ] && { IGPU_PCI="$DGPU_PCI"; DGPU_PCI=""; }
-
-if [ -n "$IGPU_PCI" ] && [ -n "$DGPU_PCI" ]; then
-    mkdir -p "$HOME/.config/hypr"
-    ln -sf "/dev/dri/by-path/pci-${IGPU_PCI}-card" "$HOME/.config/hypr/igpu-card"
-    export AQ_DRM_DEVICES="$HOME/.config/hypr/igpu-card"
-else
-    rm -f "$HOME/.config/hypr/igpu-card"
-    unset AQ_DRM_DEVICES
-fi
-EOF
+yay -S --needed --noconfirm nvidia-utils lib32-nvidia-utils nvidia-open-dkms
 ```
 Credits to these dotfile repos, heavily influenced this one:
 https://github.com/nadeemohc/dotfiles-hyprland-.git/
