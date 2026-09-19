@@ -247,6 +247,11 @@ cp -r $HOME/hyprland-dotfiles/.config/. $HOME/.config/
 
 # Linking .config's ly config to /etc
 sudo ln -sf "$HOME/.config/ly/config.ini" /etc/ly/config.ini
+sudo mkdir -p /etc/systemd/system/ly@tty1.service.d
+sudo tee /etc/systemd/system/ly@tty1.service.d/override.conf > /dev/null << 'EOF'
+[Service]
+ExecStartPre=/usr/bin/printf '%%b' '\e]P01e1e2e\e]P7cdd6f4\ec'
+EOF
 
 # Getting the hyprland configs set up:                                                   
 echo '[ -f ~/.config/bash/bashrc ] && . ~/.config/bash/bashrc' > ~/.bashrc
