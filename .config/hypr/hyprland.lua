@@ -8,6 +8,67 @@ local var_browser = "brave-origin"
 
 -- === HELPER FUNCTIONS ===
 
+local function detect_igpu_card()
+    local h = io.popen([[
+        for f in /sys/bus/pci/devices/*/class; do
+            read -r c < "$f"
+            case "$c" in
+                0x030000|0x030200)
+                    basename "$(dirname "$f")"
+                    ;;
+            esac
+        done
+    ]])
+
+    if not h then
+        return nil
+    end
+
+    local gpus = {}
+    for line in h:lines() do
+        gpus[#gpus + 1] = line
+    end
+    h:close()
+
+    local igpu, dgpu
+
+    for _, pci in ipairs(gpus) do
+        local bus = pci:match("^[^:]+:(%x+):")
+
+        if bus == "00" and not igpu then
+            igpu = pci
+        elseif bus ~= "00" and not dgpu then
+            dgpu = pci
+        end
+    end
+
+    -- Same fallback as the Bash version
+    if not igpu then
+        igpu = dgpu
+        dgpu = nil
+    end
+
+    -- [ -n "$IGPU_PCI" ] && [ -n "$DGPU_PCI" ] &&
+    -- [ -e "/dev/dri/by-path/pci-${IGPU_PCI}-card" ]
+    if igpu and dgpu then
+        local path = "/dev/dri/by-path/pci-" .. igpu .. "-card"
+        local f = io.open(path, "r")
+
+        if f then
+            f:close()
+            local rh = io.popen("readlink -f " .. path)
+            local real = nil
+            if rh then
+                real = rh:read("*l")
+                rh:close()
+            end
+            return real
+        end
+    end
+
+    return nil
+end
+
 -- Libva detection helper (sysfs, prefers iGPU on bus 00, falls back to any GPU)
 local function detect_libva_driver()
 	local h = io.popen([[
@@ -91,6 +152,14 @@ hl.monitor({
 })
 
 -- === AUTOSTART ===
+
+local igpu_card = detect_igpu_card()
+
+if igpu_card then
+    hl.env("AQ_DRM_DEVICES", igpu_card)
+else
+    hl.env("AQ_DRM_DEVICES", "")
+end
 
 hl.on("hyprland.start", function()
     hl.exec_cmd(var_terminal .. " " .. var_terminal_flags)
