@@ -16,8 +16,8 @@ This should preferably run after a clean arch install
 bash -c "$(curl -fsSL https://raw.githubusercontent.com/agustux/hyprland-dotfiles/main/install.sh)"
 ```
 Flags:
-  --nvidia   Install NVIDIA drivers/config
-  --bloat    Install Gus-curated extra tools and utilities
+`--nvidia`  Install NVIDIA drivers/config
+`--bloat`   Install Gus-curated extra tools and utilities
 
 The installer may modify your system configuration and will install
 packages. Review install.sh before running it if you want to see exactly
