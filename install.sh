@@ -1,9 +1,21 @@
 #!/bin/bash
 
+# Stop immediately if UID is root
 if [ "$EUID" -eq 0 ]; then
   echo "Don't run this script as root" >&2
   exit 1
 fi
+
+# Kernel parameter setting
+CMDLINE=/etc/kernel/cmdline
+set_param() {
+  local key="$1" val="$2"
+  if grep -qP "(^|\s)${key}=\S*" "$CMDLINE"; then
+    sudo sed -i -E "s/(^|\s)${key}=[^ ]*/\1${key}=${val}/" "$CMDLINE"
+  else
+    sudo sed -i -E "s/\s*$/ ${key}=${val}/" "$CMDLINE"
+  fi
+}
 
 # Intel undervolt support detection (i3/i5/i7/i9, 4th-10th gen)
 CPU_MODEL=$(grep -m1 "model name" /proc/cpuinfo)
@@ -207,10 +219,9 @@ if [ "$NVIDIA" -eq 1 ]; then
 
   yay -S --needed --noconfirm nvidia-utils lib32-nvidia-utils nvidia-open-dkms
 
-  if ! grep -q "nvidia_drm.modeset=1" /etc/kernel/cmdline; then
-      echo " iommu=pt nvidia.NVreg_PreserveVideoMemoryAllocations=1 nvidia_drm.modeset=1" | sudo tee -a /etc/kernel/cmdline
-      sudo mkinitcpio -P
-  fi
+  set_param iommu pt
+  set_param nvidia.NVreg_PreserveVideoMemoryAllocations 1
+  set_param nvidia_drm.modeset 1
   sudo mkinitcpio -P
 
   sudo tee /etc/modprobe.d/nvidia-pm.conf > /dev/null << 'EOF'
@@ -233,7 +244,7 @@ fi
 # DOTFILES & FINALIZE
 ####################################################################################################
 
-# More Hyprland stuff:
+# More Hyprland stuff
 mkdir -p $HOME/Documents
 mkdir -p $HOME/Music
 mkdir -p $HOME/Pictures
@@ -245,6 +256,22 @@ cd $HOME && git clone https://github.com/agustux/hyprland-dotfiles.git
 mkdir -p $HOME/.config
 cp -r $HOME/hyprland-dotfiles/.config/. $HOME/.config/
 
+# Setting VT color scheme
+set_param vt.default_red "30,243,166,249,137,245,148,205,88,243,166,249,137,245,148,166"
+set_param vt.default_grn "30,139,227,226,180,194,226,214,91,139,227,226,180,194,226,173"
+set_param vt.default_blu "46,168,161,175,250,231,213,244,112,168,161,175,250,231,213,200"
+sudo mkinitcpio -P
+
+# Copying GRUB config
+sudo mkdir -p /boot/grub/themes/catppuccin-mocha-gus
+sudo cp -r $HOME/.config/grub/. /boot/grub/themes/catppuccin-mocha-gus/
+sudo chmod -x /etc/grub.d/10_linux
+sudo sed -i 's|^#GRUB_TERMINAL_OUTPUT=.*|GRUB_TERMINAL_OUTPUT=gfxterm|' /etc/default/grub
+sudo sed -i 's|^GRUB_THEME=.*|GRUB_THEME="/boot/grub/themes/catppuccin-mocha/theme.txt"|' /etc/default/grub
+sudo sed -i 's|^GRUB_TERMINAL_INPUT=console|#GRUB_TERMINAL_INPUT=console|' /etc/default/grub
+sudo sed -i 's/^GRUB_TIMEOUT=.*/GRUB_TIMEOUT=15/' /etc/default/grub
+sudo grub-mkconfig -o /boot/grub/grub.cfg
+
 # Linking .config's ly config to /etc
 sudo ln -sf "$HOME/.config/ly/config.ini" /etc/ly/config.ini
 sudo mkdir -p /etc/systemd/system/ly@tty1.service.d
@@ -253,10 +280,10 @@ sudo tee /etc/systemd/system/ly@tty1.service.d/override.conf > /dev/null << 'EOF
 ExecStartPre=/usr/bin/printf '%%b' '\e]P01e1e2e\e]P7cdd6f4\ec'
 EOF
 
-# Getting the hyprland configs set up:                                                   
+# Getting the hyprland configs set up
 echo '[ -f ~/.config/bash/bashrc ] && . ~/.config/bash/bashrc' > ~/.bashrc
 
-# Purging any orphaned packages:
+# Purging any orphaned packages
 orphans=$(yay -Qtdq 2>/dev/null)
 [ -n "$orphans" ] && yay -Rns --noconfirm $orphans
 yay -Scc --noconfirm
