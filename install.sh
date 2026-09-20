@@ -68,7 +68,7 @@ fi
 
 # Installing yay (AUR helper):
 if ! command -v yay &> /dev/null; then
-  sudo pacman -Sy --needed --noconfirm git base-devel && git clone https://aur.archlinux.org/yay-bin.git && cd yay-bin && makepkg -si
+  sudo pacman -Sy --needed --noconfirm git base-devel && git clone https://aur.archlinux.org/yay-bin.git && cd yay-bin && makepkg -si --needed --noconfirm
   cd ../ && rm -rf yay-bin/
 fi
 
@@ -205,10 +205,9 @@ if [ "$IS_CHROMEBOOK" -eq 1 ]; then
   yay -S --needed --noconfirm alsa-utils
   TMP_DIR=$(mktemp -d)
   git clone --depth 1 https://github.com/WeirdTreeThing/chromebook-linux-audio "$TMP_DIR/audio" \
-    && (cd "$TMP_DIR/audio" && ./setup-audio)
+      && (cd "$TMP_DIR/audio" && ./setup-audio)
   git clone --depth 1 https://github.com/WeirdTreeThing/cros-keyboard-map "$TMP_DIR/kbd" \
-    && (cd "$TMP_DIR/kbd" && ./install.sh)
-  rm -rf "$TMP_DIR"
+      && (cd "$TMP_DIR/kbd" && echo "n" | ./install.sh)  rm -rf "$TMP_DIR"
 fi
 
 # NVIDIA stuff for hyprland
