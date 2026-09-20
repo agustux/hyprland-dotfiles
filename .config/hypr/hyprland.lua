@@ -157,8 +157,6 @@ local igpu_card = detect_igpu_card()
 
 if igpu_card then
     hl.env("AQ_DRM_DEVICES", igpu_card)
-else
-    hl.env("AQ_DRM_DEVICES", "")
 end
 
 hl.on("hyprland.start", function()
@@ -170,10 +168,10 @@ hl.on("hyprland.start", function()
 
     hl.exec_cmd("dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP PATH")
     hl.exec_cmd("/usr/lib/hyprpolkitagent/hyprpolkitagent")
-    hl.exec_cmd("/usr/lib/xdg-desktop-portal-hyprland")
-    hl.exec_cmd("/usr/lib/xdg-desktop-portal")
     hl.exec_cmd("gsettings set org.gnome.desktop.interface color-scheme \"prefer-dark\"")
     hl.exec_cmd("gsettings set org.gnome.desktop.interface gtk-theme \"adw-gtk3\"")
+    hl.exec_cmd("/usr/lib/xdg-desktop-portal-hyprland")
+    hl.exec_cmd("/usr/lib/xdg-desktop-portal")
     hl.exec_cmd("xhost +SI:localuser:root")
 end)
 
