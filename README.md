@@ -5,7 +5,7 @@ instead of hardcoded values, so the same dotfiles port across different machines
 Laptop battery life is priority, so power tooling (tlp, power-profiles-daemon, intel-undervolt) is included
 
 ### Requirements:
-- Arch Linux
+- Arch Linux (with UKI kernel)
 - Internet connection
 - A supported (clean) Hyprland environment
 
