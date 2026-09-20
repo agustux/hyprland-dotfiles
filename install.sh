@@ -263,8 +263,8 @@ set_param vt.default_blu "46,168,161,175,250,231,213,244,112,168,161,175,250,231
 sudo mkinitcpio -P
 
 # Copying GRUB config
-sudo mkdir -p /boot/grub/themes/catppuccin-mocha-gus
-sudo cp -r $HOME/.config/grub/. /boot/grub/themes/catppuccin-mocha-gus/
+sudo mkdir -p /boot/grub/themes/catppuccin-mocha
+sudo cp -r $HOME/.config/grub/. /boot/grub/themes/catppuccin-mocha/
 sudo chmod -x /etc/grub.d/10_linux
 sudo sed -i 's|^#GRUB_TERMINAL_OUTPUT=.*|GRUB_TERMINAL_OUTPUT=gfxterm|' /etc/default/grub
 sudo sed -i 's|^GRUB_THEME=.*|GRUB_THEME="/boot/grub/themes/catppuccin-mocha/theme.txt"|' /etc/default/grub
@@ -287,3 +287,5 @@ echo '[ -f ~/.config/bash/bashrc ] && . ~/.config/bash/bashrc' > ~/.bashrc
 orphans=$(yay -Qtdq 2>/dev/null)
 [ -n "$orphans" ] && yay -Rns --noconfirm $orphans
 yay -Scc --noconfirm
+
+echo "Everything seems to have been applied successfully, reboot for the changes to take effect"
