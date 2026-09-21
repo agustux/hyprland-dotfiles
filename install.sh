@@ -62,6 +62,11 @@ else
   fi
 fi
 
+# Ghostty OpenGL 4.3+ support check
+sudo pacman -S --needed --noconfirm mesa-utils
+GL_VERSION=$(glxinfo | grep -m1 "OpenGL version string" | grep -oP '\d+\.\d+' | head -1)
+GHOSTTY_SUPPORTED=$(awk -v v="$GL_VERSION" 'BEGIN{print (v>=4.3)?1:0}')
+
 ####################################################################################################
 # PACKAGE INSTALLS
 ####################################################################################################
@@ -82,7 +87,14 @@ done
 
 # Basic Hyprland Packages
 yay -S --needed --noconfirm hyprland xdg-desktop-portal-gtk xdg-desktop-portal-hyprland \
-    hyprpolkitagent hyprlock hypridle hyprpaper hyprshot hyprshutdown wl-clipboard dunst brightnessctl ghostty
+    hyprpolkitagent hyprlock hypridle hyprpaper hyprshot hyprshutdown wl-clipboard dunst brightnessctl
+
+# Terminal
+if [ "$GHOSTTY_SUPPORTED" -eq 1 ]; then
+  yay -S --needed --noconfirm ghostty
+else
+  yay -S --needed --noconfirm foot
+fi
 
 # Basic Hyprland Packages (AUR)
 yay -S --needed --noconfirm hyprqt6engine
@@ -156,6 +168,15 @@ fi
 ####################################################################################################
 # SYSTEM CONFIGURATION
 ####################################################################################################
+
+# Adding Swapfile
+if [ ! -f /swapfile ]; then
+  sudo dd if=/dev/zero of=/swapfile bs=1M count=4096 status=progress
+  sudo chmod 600 /swapfile
+  sudo mkswap /swapfile
+  sudo swapon /swapfile
+  echo '/swapfile none swap sw 0 0' | sudo tee -a /etc/fstab > /dev/null
+fi
 
 # Configuring TLP:
 sudo systemctl disable power-profiles-daemon.service
@@ -254,6 +275,9 @@ mkdir -p $HOME/Pictures/Screenshots
 cd $HOME && git clone https://github.com/agustux/hyprland-dotfiles.git
 mkdir -p $HOME/.config
 cp -r $HOME/hyprland-dotfiles/.config/. $HOME/.config/
+
+# Setting default terminal if opengl version not supported:
+[ "$GHOSTTY_SUPPORTED" -eq 0 ] && sed -i 's/var_terminal = "ghostty"/var_terminal = "foot"/' "$HOME/.config/hypr/hyprland.lua"
 
 # Setting VT color scheme
 set_param vt.default_red "30,243,166,249,137,245,148,205,88,243,166,249,137,245,148,166"
