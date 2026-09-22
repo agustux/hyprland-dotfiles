@@ -233,11 +233,26 @@ fi
 
 # NVIDIA stuff for hyprland
 if [ "$NVIDIA" -eq 1 ]; then
+
+  GPU_NAME=$(lspci -d 10de: | grep -iE 'vga|3d|display')
+  NVIDIA_LEGACY=0
+  if echo "$GPU_NAME" | grep -qPi 'RTX\s*[2-9][0-9]{3}|GTX\s*16[0-9]{2}|TITAN RTX|Tesla T4|Quadro T[0-9]{3,4}'; then
+      NVIDIA_LEGACY=0   # Turing+
+  elif echo "$GPU_NAME" | grep -qPi 'GTX\s*(9[0-9]{2}|10[0-9]{2})|GTX\s*750\s*Ti|Quadro [MP][0-9]{3,4}|TITAN\s*(X|Xp|V)\b|Tesla [MPV][0-9]+|GP100'; then
+      NVIDIA_LEGACY=1   # Maxwell/Pascal/Volta
+  else
+      echo "Warning: unrecognized GPU '$GPU_NAME' — assuming Turing+ (open driver)" >&2
+  fi
+
+  if [ "$NVIDIA_LEGACY" -eq 1 ]; then
+      yay -S --needed --noconfirm nvidia-580xx-dkms nvidia-580xx-utils lib32-nvidia-580xx-utils linux-headers
+  else
+      yay -S --needed --noconfirm nvidia-utils lib32-nvidia-utils nvidia-open-dkms linux-headers
+  fi
+
   sudo systemctl enable nvidia-resume
   sudo systemctl enable nvidia-suspend
   sudo systemctl enable nvidia-hibernate
-
-  yay -S --needed --noconfirm nvidia-utils lib32-nvidia-utils nvidia-open-dkms
 
   set_param iommu pt
   set_param nvidia.NVreg_PreserveVideoMemoryAllocations 1
