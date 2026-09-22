@@ -77,10 +77,11 @@ else
   fi
 fi
 
-# Ghostty OpenGL 4.3+ support check
+# Ghostty OpenGL 4.3+ support check (headless-safe via surfaceless EGL)
 sudo pacman -S --needed --noconfirm mesa-utils
-GL_VERSION=$(glxinfo | grep -m1 "OpenGL version string" | grep -oP '\d+\.\d+' | head -1)
-GHOSTTY_SUPPORTED=$(awk -v v="$GL_VERSION" 'BEGIN{print (v>=4.3)?1:0}')
+GL_VERSION=$(eglinfo -p surfaceless | grep -m1 "OpenGL core profile version string" | grep -oP '\d+\.\d+' | head -1)
+[ -z "$GL_VERSION" ] && GL_VERSION=$(eglinfo -p surfaceless | grep -m1 "OpenGL version string" | grep -oP '\d+\.\d+' | head -1)
+GHOSTTY_SUPPORTED=$(awk -v v="${GL_VERSION:-0}" 'BEGIN{print (v>=4.3)?1:0}')
 
 ####################################################################################################
 # PACKAGE INSTALLS
