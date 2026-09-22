@@ -7,13 +7,28 @@ if [ "$EUID" -eq 0 ]; then
 fi
 
 # Kernel parameter setting
-CMDLINE=/etc/kernel/cmdline
+if [ -f /etc/kernel/cmdline ]; then
+  CMDLINE_MODE=uki
+  CMDLINE=/etc/kernel/cmdline
+else
+  CMDLINE_MODE=grub
+  CMDLINE=/etc/default/grub
+fi
+
 set_param() {
   local key="$1" val="$2"
-  if grep -qP "(^|\s)${key}=\S*" "$CMDLINE"; then
-    sudo sed -i -E "s/(^|\s)${key}=[^ ]*/\1${key}=${val}/" "$CMDLINE"
+  if [ "$CMDLINE_MODE" = uki ]; then
+    if grep -qP "(^|\s)${key}=\S*" "$CMDLINE"; then
+      sudo sed -i -E "s/(^|\s)${key}=[^ ]*/\1${key}=${val}/" "$CMDLINE"
+    else
+      sudo sed -i -E "s/\s*$/ ${key}=${val}/" "$CMDLINE"
+    fi
   else
-    sudo sed -i -E "s/\s*$/ ${key}=${val}/" "$CMDLINE"
+    if grep -qP "GRUB_CMDLINE_LINUX_DEFAULT=\"[^\"]*(^|\s)${key}=\S*" "$CMDLINE"; then
+      sudo sed -i -E "s/(GRUB_CMDLINE_LINUX_DEFAULT=\"[^\"]*)\b${key}=[^ \"]*/\1${key}=${val}/" "$CMDLINE"
+    else
+      sudo sed -i -E "s/(GRUB_CMDLINE_LINUX_DEFAULT=\")([^\"]*)\"/\1\2 ${key}=${val}\"/" "$CMDLINE"
+    fi
   fi
 }
 
@@ -258,7 +273,7 @@ if [ "$NVIDIA" -eq 1 ]; then
   set_param iommu pt
   set_param nvidia.NVreg_PreserveVideoMemoryAllocations 1
   set_param nvidia_drm.modeset 1
-  sudo mkinitcpio -P
+  [ "$CMDLINE_MODE" = uki ] && sudo mkinitcpio -P
 
   sudo tee /etc/modprobe.d/nvidia-pm.conf > /dev/null << 'EOF'
 options nvidia NVreg_DynamicPowerManagement=0x02
@@ -299,7 +314,7 @@ cp -r $HOME/hyprland-dotfiles/.config/. $HOME/.config/
 set_param vt.default_red "30,243,166,249,137,245,148,205,88,243,166,249,137,245,148,166"
 set_param vt.default_grn "30,139,227,226,180,194,226,214,91,139,227,226,180,194,226,173"
 set_param vt.default_blu "46,168,161,175,250,231,213,244,112,168,161,175,250,231,213,200"
-sudo mkinitcpio -P
+[ "$CMDLINE_MODE" = uki ] && sudo mkinitcpio -P
 
 # Copying GRUB config
 sudo mkdir -p /boot/grub/themes/catppuccin-mocha
