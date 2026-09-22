@@ -320,7 +320,7 @@ set_param vt.default_blu "46,168,161,175,250,231,213,244,112,168,161,175,250,231
 # Copying GRUB config
 sudo mkdir -p /boot/grub/themes/catppuccin-mocha
 sudo cp -r $HOME/.config/grub/. /boot/grub/themes/catppuccin-mocha/
-sudo chmod -x /etc/grub.d/10_linux
+[ "$CMDLINE_MODE" = uki ] && sudo chmod -x /etc/grub.d/10_linux
 sudo sed -i 's|^#GRUB_TERMINAL_OUTPUT=.*|GRUB_TERMINAL_OUTPUT=gfxterm|' /etc/default/grub
 sudo sed -i 's|^#\?GRUB_THEME=.*|GRUB_THEME="/boot/grub/themes/catppuccin-mocha/theme.txt"|' /etc/default/grub
 sudo sed -i 's|^GRUB_TERMINAL_INPUT=console|#GRUB_TERMINAL_INPUT=console|' /etc/default/grub
