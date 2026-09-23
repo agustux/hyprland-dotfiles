@@ -312,6 +312,12 @@ cd $HOME && git clone https://github.com/agustux/hyprland-dotfiles.git
 mkdir -p $HOME/.config
 cp -r $HOME/hyprland-dotfiles/.config/. $HOME/.config/
 
+# Rewriting hardcoded home path in GTK bookmarks
+for d in gtk-3.0 gtk-4.0; do
+  sed "s|@USER@|$USER|g" "$HOME/.config/$d/bookmarks.tmpl" > "$HOME/.config/$d/bookmarks"
+  rm "$HOME/.config/$d/bookmarks.tmpl"
+done
+
 # Setting default terminal if opengl version not supported:
 [ "$GHOSTTY_SUPPORTED" -eq 0 ] && sed -i 's/var_terminal = "ghostty"/var_terminal = "foot"/' "$HOME/.config/hypr/hyprland.lua"
 
