@@ -21,7 +21,7 @@
         "format-wifi": " ",
         "tooltip": true,
         "tooltip-format": "SSID: {essid}\nSignal: {signalStrength}%\nSpeed: {bandwidthDownBits} ↓ / {bandwidthUpBits} ↑",
-        "format-ethernet": "",
+        "format-ethernet": "",
         "format-disconnected": "⚠",
         "interval": 2,
         "on-click": "networkmanager_dmenu -i"
