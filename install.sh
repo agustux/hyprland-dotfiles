@@ -141,15 +141,14 @@ yay -S --needed --noconfirm networkmanager-dmenu power-profiles-daemon tlp pavuc
 
 # GUI Utilities
 yay -S --needed --noconfirm baobab gnome-disk-utility nautilus loupe decibels snapshot vlc \
-    vlc-plugins-all gnome-calculator gnome-clocks \
-    papers
+    vlc-plugins-all gnome-calculator gnome-clocks papers
 
 # GUI Utilities (AUR)
 yay -S --needed --noconfirm brave-origin-bin
 
 # CLI Utilities
 yay -S --needed --noconfirm curl less man-db ufw rsync powertop nvtop zip unzip \
-    cpupower fastfetch opencode
+    cpupower fastfetch
 
 # Support Libraries
 yay -S --needed --noconfirm bash-completion tar-scripts exfat-utils libcamera gst-plugin-libcamera \
@@ -158,12 +157,6 @@ yay -S --needed --noconfirm bash-completion tar-scripts exfat-utils libcamera gs
 # Neovim Packages
 yay -S --needed --noconfirm neovim ripgrep fd tree-sitter-cli lua-language-server \
     bash-language-server pyright clang markdown-oxide
-
-# Other graphics stuff
-yay -S --needed --noconfirm mesa lib32-mesa vulkan-icd-loader lib32-vulkan-icd-loader \
-    libdrm lib32-libdrm lib32-glibc \
-    lib32-gcc-libs lib32-libglvnd lib32-wayland lib32-libx11 lib32-libxcb lib32-libpulse \
-    lib32-libpipewire lib32-alsa-lib lib32-alsa-plugins
 
 # Broadcom Wifi MacBook Fixes
 if [ "$NEEDS_BROADCOM_WL" -eq 1 ]; then
@@ -181,8 +174,14 @@ fi
 
 # Full Gus Packages
 if [ "$BLOAT" -eq 1 ]; then
+    # Misc.
     yay -S --needed --noconfirm proton-vpn-gtk-app obs-studio windscribe-v2-bin localsend-bin ventoy-bin yt-dlp \
-         android-udev android-tools gvfs-mtp libmtp scrcpy gnirehtet-bin
+         android-udev android-tools gvfs-mtp libmtp scrcpy gnirehtet-bin opencode
+    # Other graphics stuff
+    yay -S --needed --noconfirm mesa lib32-mesa vulkan-icd-loader lib32-vulkan-icd-loader \
+        libdrm lib32-libdrm lib32-glibc \
+        lib32-gcc-libs lib32-libglvnd lib32-wayland lib32-libx11 lib32-libxcb lib32-libpulse \
+        lib32-libpipewire lib32-alsa-lib lib32-alsa-plugins
 fi
 
 ####################################################################################################
