@@ -77,16 +77,6 @@ else
   fi
 fi
 
-# Ghostty OpenGL 4.3+ support check (headless-safe via surfaceless EGL)
-if [ "$NVIDIA" -eq 1 ]; then
-  GHOSTTY_SUPPORTED=1
-else
-  sudo pacman -S --needed --noconfirm mesa-utils
-  GL_VERSION=$(eglinfo -p surfaceless | grep -m1 "OpenGL core profile version string" | grep -oP '\d+\.\d+' | head -1)
-  [ -z "$GL_VERSION" ] && GL_VERSION=$(eglinfo -p surfaceless | grep -m1 "OpenGL version string" | grep -oP '\d+\.\d+' | head -1)
-  GHOSTTY_SUPPORTED=$(awk -v v="${GL_VERSION:-0}" 'BEGIN{print (v>=4.3)?1:0}')
-fi
-
 ####################################################################################################
 # PACKAGE INSTALLS
 ####################################################################################################
@@ -110,11 +100,7 @@ yay -S --needed --noconfirm hyprland xdg-desktop-portal-gtk xdg-desktop-portal-h
     hyprpolkitagent hyprlock hypridle hyprpaper hyprshot hyprshutdown wl-clipboard dunst brightnessctl
 
 # Terminal
-if [ "$GHOSTTY_SUPPORTED" -eq 1 ]; then
-  yay -S --needed --noconfirm ghostty
-else
-  yay -S --needed --noconfirm foot
-fi
+yay -S --needed --noconfirm ghostty
 
 # Basic Hyprland Packages (AUR)
 yay -S --needed --noconfirm hyprqt6engine
@@ -316,9 +302,6 @@ for d in gtk-3.0 gtk-4.0; do
   sed "s|@USER@|$USER|g" "$HOME/.config/$d/bookmarks.tmpl" > "$HOME/.config/$d/bookmarks"
   rm "$HOME/.config/$d/bookmarks.tmpl"
 done
-
-# Setting default terminal if opengl version not supported:
-[ "$GHOSTTY_SUPPORTED" -eq 0 ] && sed -i 's/var_terminal = "ghostty"/var_terminal = "foot"/' "$HOME/.config/hypr/hyprland.lua"
 
 # Setting VT color scheme
 set_param vt.default_red "30,243,166,249,137,245,148,205,88,243,166,249,137,245,148,166"
