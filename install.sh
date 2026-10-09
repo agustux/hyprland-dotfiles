@@ -57,10 +57,12 @@ lspci -d 14e4: | grep -qi network && NEEDS_BROADCOM_WL=1
 # Parse flags (for non-interactive runs)
 FORCE_NVIDIA=0
 BLOAT=0
+GNOME=0
 for arg in "$@"; do
   case "$arg" in
     --nvidia) FORCE_NVIDIA=1 ;;
     --bloat) BLOAT=1 ;;
+    --gnome) GNOME=1 ;;
   esac
 done
 
@@ -143,6 +145,12 @@ yay -S --needed --noconfirm bash-completion tar-scripts exfat-utils libcamera gs
 # Neovim Packages
 yay -S --needed --noconfirm neovim ripgrep fd tree-sitter-cli lua-language-server \
     bash-language-server pyright clang markdown-oxide
+
+# GNOME
+if [ "$GNOME" -eq 1 ]; then
+  yay -S --needed --noconfirm gdm gnome-shell gnome-control-center gnome-session \
+      xdg-desktop-portal-gnome dconf wget
+fi
 
 # Broadcom Wifi MacBook Fixes
 if [ "$NEEDS_BROADCOM_WL" -eq 1 ]; then
@@ -281,6 +289,21 @@ EOF
 fi
 # End NVIDIA stuff for hyprland
 
+# GNOME
+if [ "$GNOME" -eq 1 ]; then
+  sudo systemctl disable ly@tty1.service 2>/dev/null
+  sudo systemctl enable gdm.service
+
+  dbus-run-session -- bash -c '
+    dconf write /org/gnome/desktop/search-providers/disabled "['"'"'org.gnome.clocks.desktop'"'"']"
+    gsettings set org.gnome.desktop.interface show-battery-percentage true
+    gsettings set org.gnome.settings-daemon.plugins.power sleep-inactive-ac-type "nothing"
+    gsettings set org.gnome.settings-daemon.plugins.power power-button-action "interactive"
+    gsettings set org.gnome.desktop.peripherals.touchpad disable-while-typing false
+    gsettings set org.gnome.desktop.interface color-scheme "prefer-dark"
+  '
+fi
+
 ####################################################################################################
 # DOTFILES & FINALIZE
 ####################################################################################################
@@ -329,6 +352,11 @@ EOF
 
 # Getting the hyprland configs set up
 echo '[ -f ~/.config/bash/bashrc ] && . ~/.config/bash/bashrc' > ~/.bashrc
+
+if [ "$GNOME" -eq 1 ]; then
+  sudo -v
+  wget -qO- https://raw.githubusercontent.com/agustux/GDB/main/gdb.sh | bash
+fi
 
 # Purging any orphaned packages
 orphans=$(yay -Qtdq 2>/dev/null)
