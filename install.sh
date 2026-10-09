@@ -353,11 +353,6 @@ EOF
 # Getting the hyprland configs set up
 echo '[ -f ~/.config/bash/bashrc ] && . ~/.config/bash/bashrc' > ~/.bashrc
 
-if [ "$GNOME" -eq 1 ]; then
-  sudo -v
-  wget -qO- https://raw.githubusercontent.com/agustux/GDB/main/gdb.sh | bash
-fi
-
 # Purging any orphaned packages
 orphans=$(yay -Qtdq 2>/dev/null)
 [ -n "$orphans" ] && yay -Rns --noconfirm $orphans
