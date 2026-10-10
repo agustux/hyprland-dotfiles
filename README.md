@@ -17,7 +17,8 @@ bash -c "$(curl -fsSL https://raw.githubusercontent.com/agustux/hypr-dots/main/i
 ```
 Flags:
 - `--nvidia`  Install NVIDIA drivers/config
-- `--bloat`   Install Gus-curated extra tools and utilities
+- `--gnome`   Install GNOME and switch the display manager from ly to GDM, still installs rest
+- `--bloat`   Install Gus-curated extra tools and utilities, including the NVIDIA driver and GNOME stuff
 
 The installer may modify your system configuration and will install
 packages. Review install.sh before running it if you want to see exactly
