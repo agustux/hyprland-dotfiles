@@ -13,7 +13,7 @@ This should preferably run after a clean arch install
 
 ### Quickstart:
 ```
-bash -c "$(curl -fsSL https://raw.githubusercontent.com/agustux/hyprland-dotfiles/main/install.sh)"
+bash -c "$(curl -fsSL https://raw.githubusercontent.com/agustux/hypr-dots/main/install.sh)"
 ```
 Flags:
 - `--nvidia`  Install NVIDIA drivers/config
@@ -72,4 +72,4 @@ what will be changed.
 | `Super + S` | Toggle **s**cratchpad |
 | `Super + Shift + S` | Move window to **s**cratchpad |
 
-![Example of my rice](https://github.com/agustux/hyprland-dotfiles/blob/main/assets/2026-09-11-142304_hyprshot.png)
+![Example of my rice](https://github.com/agustux/hypr-dots/blob/main/assets/2026-09-11-142304_hyprshot.png)

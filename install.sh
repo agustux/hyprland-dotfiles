@@ -319,9 +319,9 @@ mkdir -p $HOME/Videos
 mkdir -p $HOME/Downloads
 mkdir -p $HOME/Pictures/Screenshots
 
-cd $HOME && git clone https://github.com/agustux/hyprland-dotfiles.git
+cd $HOME && git clone https://github.com/agustux/hypr-dots.git
 mkdir -p $HOME/.config
-cp -r $HOME/hyprland-dotfiles/.config/. $HOME/.config/
+cp -r $HOME/hypr-dots/.config/. $HOME/.config/
 
 # Rewriting hardcoded home path in GTK bookmarks
 for d in gtk-3.0 gtk-4.0; do
