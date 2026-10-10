@@ -65,6 +65,7 @@ for arg in "$@"; do
     --gnome) GNOME=1 ;;
   esac
 done
+[ "$BLOAT" -eq 1 ] && GNOME=1
 
 # NVIDIA presence detection (vendor ID 10de = NVIDIA), with --nvidia override
 # and an interactive fallback prompt if no GPU is detected and no flag was passed
@@ -250,7 +251,9 @@ if [ "$NVIDIA" -eq 1 ]; then
 
   GPU_NAME=$(lspci -d 10de: | grep -iE 'vga|3d|display')
   NVIDIA_LEGACY=0
-  if echo "$GPU_NAME" | grep -qPi 'RTX\s*[2-9][0-9]{3}|GTX\s*16[0-9]{2}|TITAN RTX|Tesla T4|Quadro T[0-9]{3,4}'; then
+  if [ "$BLOAT" -eq 1 ]; then
+      NVIDIA_LEGACY=0   # --bloat: skip detection, always open driver
+  elif echo "$GPU_NAME" | grep -qPi 'RTX\s*[2-9][0-9]{3}|GTX\s*16[0-9]{2}|TITAN RTX|Tesla T4|Quadro T[0-9]{3,4}'; then
       NVIDIA_LEGACY=0   # Turing+
   elif echo "$GPU_NAME" | grep -qPi 'GTX\s*(9[0-9]{2}|10[0-9]{2})|GTX\s*750\s*Ti|Quadro [MP][0-9]{3,4}|TITAN\s*(X|Xp|V)\b|Tesla [MPV][0-9]+|GP100'; then
       NVIDIA_LEGACY=1   # Maxwell/Pascal/Volta
